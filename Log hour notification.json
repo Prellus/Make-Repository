@@ -1,0 +1,618 @@
+{
+    "name": "Log hour notification",
+    "flow": [
+        {
+            "id": 11,
+            "module": "monday:ListBoards",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1763503
+            },
+            "mapper": {
+                "limit": "25",
+                "order_by": "created_at",
+                "workspace_ids": [],
+                "includeColumns": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "order_by": {
+                            "label": "Created at"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "monday"
+                            },
+                            "label": "My Monday v2 connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:monday",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "includeColumns",
+                        "type": "boolean",
+                        "label": "Include Columns",
+                        "required": true
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit",
+                        "required": true
+                    },
+                    {
+                        "name": "workspace_ids",
+                        "spec": {
+                            "name": "value",
+                            "type": "select",
+                            "label": "Workspace ID",
+                            "dynamic": true,
+                            "options": [],
+                            "required": true
+                        },
+                        "type": "array",
+                        "label": "Workspace IDs"
+                    },
+                    {
+                        "name": "order_by",
+                        "type": "select",
+                        "label": "Order by",
+                        "validate": {
+                            "enum": [
+                                "created_at",
+                                "used_at"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": 13,
+            "module": "monday:ListBoardItems",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1763503
+            },
+            "mapper": {
+                "limit": "25",
+                "boardId": "{{11.id}}",
+                "startPage": "",
+                "newestFirst": false,
+                "showParentID": false,
+                "showSubitemsID": false,
+                "filterToGetColumnValues": "project_owner"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "boardId": {
+                            "mode": "edit"
+                        },
+                        "filterToGetColumnValues": {
+                            "mode": "edit",
+                            "items": [
+                                {
+                                    "value": {
+                                        "mode": "edit"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "monday"
+                            },
+                            "label": "My Monday v2 connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:monday",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit",
+                        "required": true
+                    },
+                    {
+                        "name": "boardId",
+                        "type": "select",
+                        "label": "Board ID",
+                        "required": true
+                    },
+                    {
+                        "name": "showParentID",
+                        "type": "boolean",
+                        "label": "Show Parent ID",
+                        "required": true
+                    },
+                    {
+                        "name": "showSubitemsID",
+                        "type": "boolean",
+                        "label": "Show Subitems ID",
+                        "required": true
+                    },
+                    {
+                        "name": "startPage",
+                        "type": "uinteger",
+                        "label": "Start Page",
+                        "validate": {
+                            "min": 1
+                        }
+                    },
+                    {
+                        "name": "newestFirst",
+                        "type": "boolean",
+                        "label": "Newest First",
+                        "required": true
+                    },
+                    {
+                        "name": "filterToGetColumnValues",
+                        "spec": {
+                            "name": "value",
+                            "type": "select",
+                            "label": "Column ID",
+                            "dynamic": true,
+                            "options": [],
+                            "required": true
+                        },
+                        "type": "array",
+                        "label": "Output Column Values"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "__IMTLENGTH__",
+                        "type": "uinteger",
+                        "label": "Total number of bundles"
+                    },
+                    {
+                        "name": "__IMTINDEX__",
+                        "type": "uinteger",
+                        "label": "Bundle order position"
+                    },
+                    {
+                        "name": "id",
+                        "type": "uinteger",
+                        "label": "ID"
+                    },
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Name"
+                    },
+                    {
+                        "name": "email",
+                        "type": "email",
+                        "label": "Email"
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "date",
+                        "label": "Created at"
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "date",
+                        "label": "Updated at"
+                    },
+                    {
+                        "name": "state",
+                        "type": "text",
+                        "label": "State"
+                    },
+                    {
+                        "name": "board",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "uinteger",
+                                "label": "ID"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Board"
+                    },
+                    {
+                        "name": "creator_id",
+                        "type": "uinteger",
+                        "label": "Creator ID"
+                    },
+                    {
+                        "name": "group",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "ID"
+                            },
+                            {
+                                "name": "title",
+                                "type": "text",
+                                "label": "Title"
+                            },
+                            {
+                                "name": "deleted",
+                                "type": "boolean",
+                                "label": "Deleted"
+                            },
+                            {
+                                "name": "archived",
+                                "type": "boolean",
+                                "label": "Archived"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Group"
+                    },
+                    {
+                        "name": "column_values",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "ID"
+                            },
+                            {
+                                "name": "title",
+                                "type": "text",
+                                "label": "Title"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            },
+                            {
+                                "name": "additional_info",
+                                "type": "text",
+                                "label": "Additional Info"
+                            },
+                            {
+                                "name": "text",
+                                "type": "text",
+                                "label": "Text"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Column Values"
+                    },
+                    {
+                        "name": "parent_item",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "uinteger",
+                                "label": "ID"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Parent Item"
+                    },
+                    {
+                        "name": "subitems",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "uinteger",
+                                "label": "ID"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Subitems"
+                    },
+                    [
+                        {
+                            "name": "mappable_column_values",
+                            "spec": [
+                                {
+                                    "name": "person",
+                                    "spec": [
+                                        {
+                                            "name": "personsAndTeams",
+                                            "spec": [
+                                                {
+                                                    "name": "id",
+                                                    "type": "uinteger",
+                                                    "label": "ID"
+                                                },
+                                                {
+                                                    "name": "kind",
+                                                    "type": "text",
+                                                    "label": "Kind"
+                                                }
+                                            ],
+                                            "type": "array",
+                                            "label": "Persons and Teams"
+                                        },
+                                        {
+                                            "name": "changed_at",
+                                            "type": "date",
+                                            "label": "Changed at"
+                                        },
+                                        {
+                                            "name": "additonal_info",
+                                            "spec": [
+                                                {
+                                                    "name": "label",
+                                                    "type": "text",
+                                                    "label": "Label"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Aditional info"
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "any",
+                                            "label": "Value"
+                                        },
+                                        {
+                                            "name": "text",
+                                            "type": "text",
+                                            "label": "Text"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Owner"
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Mappable column values"
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": 15,
+            "module": "json:ParseJSON",
+            "version": 1,
+            "parameters": {
+                "type": 62366
+            },
+            "filter": {
+                "name": "that has owner",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{13.column_values[].value}}",
+                            "o": "exist"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "json": "{{13.column_values[].value}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "type": {
+                            "label": "My data structure"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "type",
+                        "type": "udt",
+                        "label": "Data structure"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "json",
+                        "type": "text",
+                        "label": "JSON string",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "changed_at",
+                        "type": "date",
+                        "label": "Changed At",
+                        "required": false
+                    },
+                    {
+                        "name": "personsAndTeams",
+                        "spec": {
+                            "spec": [
+                                {
+                                    "name": "id",
+                                    "type": "number",
+                                    "label": null,
+                                    "default": null,
+                                    "required": false
+                                },
+                                {
+                                    "name": "kind",
+                                    "type": "text",
+                                    "label": null,
+                                    "default": null,
+                                    "required": false,
+                                    "multiline": false
+                                }
+                            ],
+                            "type": "collection",
+                            "required": false
+                        },
+                        "type": "array",
+                        "label": "Persons And Teams",
+                        "required": false
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "monday:ExecuteGraphQLQuery",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1763503
+            },
+            "mapper": {
+                "method": "POST",
+                "queryBody": "mutation SendNotification{\n  create_notification(\n    text: \"Remember to Always log your hours\",\n    user_id: {{15.personsAndTeams[].id}},\n    target_id: {{11.id}},\n    target_type: Project,\n  ) { \n    id \n  }\n}",
+                "variables": [],
+                "apiVersion": "",
+                "operationName": "",
+                "variablesDataSource": "array"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "method": {
+                            "label": "POST (queries and mutations)"
+                        },
+                        "variables": {
+                            "mode": "chose"
+                        },
+                        "apiVersion": {
+                            "label": "Empty"
+                        },
+                        "variablesDataSource": {
+                            "label": "Form"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "monday"
+                            },
+                            "label": "My Monday v2 connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:monday",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "method",
+                        "type": "select",
+                        "label": "Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "GET",
+                                "POST"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "apiVersion",
+                        "type": "select",
+                        "label": "API Version"
+                    },
+                    {
+                        "name": "queryBody",
+                        "type": "text",
+                        "label": "Query",
+                        "required": true
+                    },
+                    {
+                        "name": "operationName",
+                        "type": "text",
+                        "label": "Operation Name"
+                    },
+                    {
+                        "name": "variablesDataSource",
+                        "type": "select",
+                        "label": "Variables Data Source",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "array",
+                                "object"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "variables",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Variables"
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com"
+    }
+}

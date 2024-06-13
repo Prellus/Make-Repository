@@ -1,0 +1,840 @@
+{
+    "name": "Task Creation and Updating From Monday.com to Clockify",
+    "flow": [
+        {
+            "id": 12,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 599373,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 150
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "data": {
+                                "editable": "true"
+                            },
+                            "label": "webhook monday testing create item"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "challenge",
+                        "type": "text"
+                    },
+                    {
+                        "name": "__IMTHEADERS__",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Headers"
+                    },
+                    {
+                        "name": "__IMTMETHOD__",
+                        "type": "text",
+                        "label": "Method"
+                    }
+                ],
+                "advanced": true
+            }
+        },
+        {
+            "id": 13,
+            "module": "gateway:WebhookRespond",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "body": "{{12.value}}",
+                "status": "200",
+                "headers": [
+                    {
+                        "key": "content-type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "accept",
+                        "value": "*/*"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "headers": {
+                            "mode": "chose",
+                            "items": [
+                                null,
+                                null
+                            ]
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "status",
+                        "type": "uinteger",
+                        "label": "Status",
+                        "required": true,
+                        "validate": {
+                            "min": 100
+                        }
+                    },
+                    {
+                        "name": "body",
+                        "type": "any",
+                        "label": "Body"
+                    },
+                    {
+                        "name": "headers",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key",
+                                "required": true,
+                                "validate": {
+                                    "max": 256
+                                }
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value",
+                                "required": true,
+                                "validate": {
+                                    "max": 4096
+                                }
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Custom headers",
+                        "validate": {
+                            "maxItems": 16
+                        }
+                    }
+                ],
+                "advanced": true
+            }
+        },
+        {
+            "id": 14,
+            "module": "json:ParseJSON",
+            "version": 1,
+            "parameters": {
+                "type": 62620
+            },
+            "mapper": {
+                "json": "{{12.value}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 150
+                },
+                "restore": {
+                    "parameters": {
+                        "type": {
+                            "label": "monday data when creating and updating name"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "type",
+                        "type": "udt",
+                        "label": "Data structure"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "json",
+                        "type": "text",
+                        "label": "JSON string",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "event",
+                        "spec": [
+                            {
+                                "name": "app",
+                                "type": "text",
+                                "label": null,
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            },
+                            {
+                                "name": "type",
+                                "type": "text",
+                                "label": null,
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            },
+                            {
+                                "name": "triggerTime",
+                                "type": "date",
+                                "label": null,
+                                "required": false
+                            },
+                            {
+                                "name": "subscriptionId",
+                                "type": "number",
+                                "label": null,
+                                "default": null,
+                                "required": false
+                            },
+                            {
+                                "name": "userId",
+                                "type": "number",
+                                "label": null,
+                                "default": null,
+                                "required": false
+                            },
+                            {
+                                "name": "originalTriggerUuid",
+                                "type": "text",
+                                "label": null,
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            },
+                            {
+                                "name": "boardId",
+                                "type": "number",
+                                "label": null,
+                                "default": null,
+                                "required": false
+                            },
+                            {
+                                "name": "groupId",
+                                "type": "text",
+                                "label": null,
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            },
+                            {
+                                "name": "pulseId",
+                                "type": "number",
+                                "label": null,
+                                "default": null,
+                                "required": false
+                            },
+                            {
+                                "name": "value",
+                                "spec": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": null,
+                                "required": false
+                            },
+                            {
+                                "name": "previousValue",
+                                "spec": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": null,
+                                "required": false
+                            },
+                            {
+                                "name": "triggerUuid",
+                                "type": "text",
+                                "label": null,
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Event",
+                        "required": false
+                    }
+                ]
+            }
+        },
+        {
+            "id": 21,
+            "module": "util:SetVariable2",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "name": "task_name",
+                "scope": "roundtrip",
+                "value": "{{if(14.event.previousValue.name = null; 14.event.pulseName + \"-\" + 14.event.pulseId; 14.event.previousValue.name + \"-\" + 14.event.pulseId)}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Variable name",
+                        "required": true
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "value",
+                        "type": "any",
+                        "label": "Variable value"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "task_name",
+                        "type": "any",
+                        "label": "task_name"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 23,
+            "module": "clockify:findTasks",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1806302
+            },
+            "mapper": {
+                "name": "{{21.task_name}}",
+                "limit": "10",
+                "project": "6655719415b9d064597d664c",
+                "is-active": true,
+                "workspace": "665530b3c0eac57d4526c367"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "project": {
+                            "mode": "chose",
+                            "label": "My first project"
+                        },
+                        "is-active": {
+                            "mode": "chose"
+                        },
+                        "workspace": {
+                            "mode": "chose",
+                            "label": "John Vincent Ramada's workspace"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "clockify"
+                            },
+                            "label": "My Clockify connection (vincent@prellus.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:clockify",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "workspace",
+                        "type": "select",
+                        "label": "Workspace ID",
+                        "required": true
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit"
+                    },
+                    {
+                        "name": "project",
+                        "type": "select",
+                        "label": "Project ID",
+                        "required": true
+                    },
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Name"
+                    },
+                    {
+                        "name": "is-active",
+                        "type": "boolean",
+                        "label": "Active"
+                    },
+                    {
+                        "name": "workspace",
+                        "type": "select",
+                        "label": "Workspace ID",
+                        "required": true
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit"
+                    },
+                    {
+                        "name": "project",
+                        "type": "select",
+                        "label": "Project ID",
+                        "required": true
+                    },
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Name"
+                    },
+                    {
+                        "name": "is-active",
+                        "type": "boolean",
+                        "label": "Active"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 7,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 1500,
+                    "y": 150
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 15,
+                            "module": "clockify:addTask",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 1806302
+                            },
+                            "filter": {
+                                "name": "item id not equal to a task then create",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{23.id}}",
+                                            "o": "notexist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "name": "{{14.event.pulseName}}-{{14.event.pulseId}}",
+                                "project": "6655719415b9d064597d664c",
+                                "workspace": "665530b3c0eac57d4526c367"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1800,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "project": {
+                                            "mode": "chose",
+                                            "label": "My first project"
+                                        },
+                                        "workspace": {
+                                            "mode": "chose",
+                                            "label": "John Vincent Ramada's workspace"
+                                        },
+                                        "assigneeId": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "clockify"
+                                            },
+                                            "label": "My Clockify connection (vincent@prellus.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:clockify",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "workspace",
+                                        "type": "select",
+                                        "label": "Workspace ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "project",
+                                        "type": "select",
+                                        "label": "Project ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "assigneeId",
+                                        "type": "select",
+                                        "label": "Assignee ID"
+                                    },
+                                    {
+                                        "name": "estimateHour",
+                                        "type": "uinteger",
+                                        "label": "Estimate Hours"
+                                    },
+                                    {
+                                        "name": "estimateMinute",
+                                        "type": "uinteger",
+                                        "label": "Estimate Minutes",
+                                        "validate": {
+                                            "max": 60
+                                        }
+                                    },
+                                    {
+                                        "name": "workspace",
+                                        "type": "select",
+                                        "label": "Workspace ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "project",
+                                        "type": "select",
+                                        "label": "Project ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "assigneeId",
+                                        "type": "select",
+                                        "label": "Assignee ID"
+                                    },
+                                    {
+                                        "name": "estimateHour",
+                                        "type": "uinteger",
+                                        "label": "Estimate Hours"
+                                    },
+                                    {
+                                        "name": "estimateMinute",
+                                        "type": "uinteger",
+                                        "label": "Estimate Minutes",
+                                        "validate": {
+                                            "max": 60
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 18,
+                            "module": "clockify:updateTask",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 1806302
+                            },
+                            "filter": {
+                                "name": "item id equal to a task then update",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{23.id}}",
+                                            "o": "exist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "name": "{{14.event.value.name}}-{{14.event.pulseId}}",
+                                "task": "{{23.id}}",
+                                "project": "{{23.projectId}}",
+                                "workspace": "665530b3c0eac57d4526c367"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1800,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "task": {
+                                            "mode": "edit"
+                                        },
+                                        "status": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "project": {
+                                            "mode": "edit"
+                                        },
+                                        "workspace": {
+                                            "mode": "chose",
+                                            "label": "John Vincent Ramada's workspace"
+                                        },
+                                        "assigneeIds": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "clockify"
+                                            },
+                                            "label": "My Clockify connection (vincent@prellus.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:clockify",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "mode": "edit",
+                                        "name": "workspace",
+                                        "type": "select",
+                                        "label": "Workspace ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "mode": "edit",
+                                        "name": "project",
+                                        "type": "select",
+                                        "label": "Project ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "mode": "edit",
+                                        "name": "task",
+                                        "type": "select",
+                                        "label": "Task ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "mode": "edit",
+                                        "name": "assigneeIds",
+                                        "type": "select",
+                                        "label": "Assignee IDs",
+                                        "multiple": true
+                                    },
+                                    {
+                                        "name": "estimateHour",
+                                        "type": "uinteger",
+                                        "label": "Estimate Hours"
+                                    },
+                                    {
+                                        "name": "estimateMinute",
+                                        "type": "uinteger",
+                                        "label": "Estimate Minutes",
+                                        "validate": {
+                                            "max": 60
+                                        }
+                                    },
+                                    {
+                                        "name": "status",
+                                        "type": "select",
+                                        "label": "Status",
+                                        "validate": {
+                                            "enum": [
+                                                "DONE",
+                                                "ACTIVE"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "mode": "edit",
+                                        "name": "workspace",
+                                        "type": "select",
+                                        "label": "Workspace ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "mode": "edit",
+                                        "name": "project",
+                                        "type": "select",
+                                        "label": "Project ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "mode": "edit",
+                                        "name": "task",
+                                        "type": "select",
+                                        "label": "Task ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "mode": "edit",
+                                        "name": "assigneeIds",
+                                        "type": "select",
+                                        "label": "Assignee IDs",
+                                        "multiple": true
+                                    },
+                                    {
+                                        "name": "estimateHour",
+                                        "type": "uinteger",
+                                        "label": "Estimate Hours"
+                                    },
+                                    {
+                                        "name": "estimateMinute",
+                                        "type": "uinteger",
+                                        "label": "Estimate Minutes",
+                                        "validate": {
+                                            "max": 60
+                                        }
+                                    },
+                                    {
+                                        "name": "status",
+                                        "type": "select",
+                                        "label": "Status",
+                                        "validate": {
+                                            "enum": [
+                                                "DONE",
+                                                "ACTIVE"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com"
+    }
+}

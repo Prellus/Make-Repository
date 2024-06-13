@@ -1,0 +1,1818 @@
+{
+    "name": "Integration Clockify, Monday",
+    "flow": [
+        {
+            "id": 20,
+            "module": "clockify:watchTimeEntries",
+            "version": 1,
+            "parameters": {
+                "__IMTHOOK__": 595613
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 450
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTHOOK__": {
+                            "data": {
+                                "editable": "false"
+                            },
+                            "label": "My Time Entry webhook"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTHOOK__",
+                        "type": "hook:clockify2",
+                        "label": "Webhook",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 34,
+            "module": "http:ActionSendData",
+            "version": 3,
+            "parameters": {
+                "handleErrors": false,
+                "useNewZLibDeCompress": true
+            },
+            "mapper": {
+                "ca": "",
+                "qs": [],
+                "url": "https://api.clockify.me/api/v1/workspaces/{{20.workspaceId}}/member-profile/{{20.user.id}}",
+                "gzip": true,
+                "method": "get",
+                "headers": [
+                    {
+                        "name": "X-Api-Key",
+                        "value": "OTBmNTI2NDUtM2RhNS00YmI2LWJmODYtMjIwNzMwM2JjMjcz"
+                    }
+                ],
+                "timeout": "",
+                "useMtls": false,
+                "authPass": "",
+                "authUser": "",
+                "bodyType": "",
+                "serializeUrl": false,
+                "shareCookies": false,
+                "parseResponse": false,
+                "followRedirect": true,
+                "useQuerystring": false,
+                "followAllRedirects": false,
+                "rejectUnauthorized": true
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 450
+                },
+                "restore": {
+                    "expect": {
+                        "qs": {
+                            "mode": "chose"
+                        },
+                        "method": {
+                            "mode": "chose",
+                            "label": "GET"
+                        },
+                        "headers": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        },
+                        "bodyType": {
+                            "label": "Empty"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "handleErrors",
+                        "type": "boolean",
+                        "label": "Evaluate all states as errors (except for 2xx and 3xx )",
+                        "required": true
+                    },
+                    {
+                        "name": "useNewZLibDeCompress",
+                        "type": "hidden"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "serializeUrl",
+                        "type": "boolean",
+                        "label": "Serialize URL",
+                        "required": true
+                    },
+                    {
+                        "name": "method",
+                        "type": "select",
+                        "label": "Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "get",
+                                "head",
+                                "post",
+                                "put",
+                                "patch",
+                                "delete",
+                                "options"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Headers"
+                    },
+                    {
+                        "name": "qs",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Query String"
+                    },
+                    {
+                        "name": "bodyType",
+                        "type": "select",
+                        "label": "Body type",
+                        "validate": {
+                            "enum": [
+                                "raw",
+                                "x_www_form_urlencoded",
+                                "multipart_form_data"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "parseResponse",
+                        "type": "boolean",
+                        "label": "Parse response",
+                        "required": true
+                    },
+                    {
+                        "name": "authUser",
+                        "type": "text",
+                        "label": "User name"
+                    },
+                    {
+                        "name": "authPass",
+                        "type": "password",
+                        "label": "Password"
+                    },
+                    {
+                        "name": "timeout",
+                        "type": "uinteger",
+                        "label": "Timeout",
+                        "validate": {
+                            "max": 300,
+                            "min": 1
+                        }
+                    },
+                    {
+                        "name": "shareCookies",
+                        "type": "boolean",
+                        "label": "Share cookies with other HTTP modules",
+                        "required": true
+                    },
+                    {
+                        "name": "ca",
+                        "type": "cert",
+                        "label": "Self-signed certificate"
+                    },
+                    {
+                        "name": "rejectUnauthorized",
+                        "type": "boolean",
+                        "label": "Reject connections that are using unverified (self-signed) certificates",
+                        "required": true
+                    },
+                    {
+                        "name": "followRedirect",
+                        "type": "boolean",
+                        "label": "Follow redirect",
+                        "required": true
+                    },
+                    {
+                        "name": "useQuerystring",
+                        "type": "boolean",
+                        "label": "Disable serialization of multiple same query string keys as arrays",
+                        "required": true
+                    },
+                    {
+                        "name": "gzip",
+                        "type": "boolean",
+                        "label": "Request compressed content",
+                        "required": true
+                    },
+                    {
+                        "name": "useMtls",
+                        "type": "boolean",
+                        "label": "Use Mutual TLS",
+                        "required": true
+                    },
+                    {
+                        "name": "followAllRedirects",
+                        "type": "boolean",
+                        "label": "Follow all redirect",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 35,
+            "module": "json:ParseJSON",
+            "version": 1,
+            "parameters": {
+                "type": 62610
+            },
+            "mapper": {
+                "json": "{{34.data}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 450
+                },
+                "restore": {
+                    "parameters": {
+                        "type": {
+                            "label": "clockify members"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "type",
+                        "type": "udt",
+                        "label": "Data structure"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "json",
+                        "type": "text",
+                        "label": "JSON string",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Name",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "text",
+                        "label": "Email",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "weekStart",
+                        "type": "text",
+                        "label": "Week Start",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "workCapacity",
+                        "type": "text",
+                        "label": "Work Capacity",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "workingDays",
+                        "spec": {
+                            "type": "text",
+                            "default": null,
+                            "required": false,
+                            "multiline": false
+                        },
+                        "type": "array",
+                        "label": "Working Days",
+                        "required": false
+                    },
+                    {
+                        "name": "workspaceNumber",
+                        "type": "number",
+                        "label": "Workspace Number",
+                        "default": null,
+                        "required": false
+                    },
+                    {
+                        "name": "imageUrl",
+                        "type": "text",
+                        "label": "Image Url",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "hasPassword",
+                        "type": "boolean",
+                        "label": "Has Password",
+                        "required": false
+                    },
+                    {
+                        "name": "hasPendingApprovalRequest",
+                        "type": "boolean",
+                        "label": "Has Pending Approval Request",
+                        "required": false
+                    },
+                    {
+                        "name": "userCustomFieldValues",
+                        "spec": {
+                            "type": "text",
+                            "default": null,
+                            "required": false,
+                            "multiline": false
+                        },
+                        "type": "array",
+                        "label": "User Custom Field Values",
+                        "required": false
+                    }
+                ]
+            }
+        },
+        {
+            "id": 27,
+            "module": "monday:ListItemsByColumnValues",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1763503
+            },
+            "mapper": {
+                "limit": "10",
+                "boardId": "1873520842",
+                "columnId": "text",
+                "startPage": "",
+                "columnValue": "{{20.id}}",
+                "showParentID": false,
+                "showSubitemsID": false,
+                "filterToGetColumnValues": []
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 450
+                },
+                "restore": {
+                    "expect": {
+                        "boardId": {
+                            "mode": "chose",
+                            "label": "My first project  ::  public"
+                        },
+                        "columnId": {
+                            "mode": "chose",
+                            "label": "Entry ID"
+                        },
+                        "filterToGetColumnValues": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "monday"
+                            },
+                            "label": "My Monday v2 connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:monday",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit",
+                        "required": true
+                    },
+                    {
+                        "name": "boardId",
+                        "type": "select",
+                        "label": "Board ID",
+                        "required": true
+                    },
+                    {
+                        "name": "showParentID",
+                        "type": "boolean",
+                        "label": "Show Parent ID",
+                        "required": true
+                    },
+                    {
+                        "name": "showSubitemsID",
+                        "type": "boolean",
+                        "label": "Show Subitems ID",
+                        "required": true
+                    },
+                    {
+                        "name": "startPage",
+                        "type": "uinteger",
+                        "label": "Start Page"
+                    },
+                    {
+                        "name": "columnId",
+                        "type": "select",
+                        "label": "Column ID to Search the Value",
+                        "required": true
+                    },
+                    {
+                        "name": "filterToGetColumnValues",
+                        "spec": {
+                            "name": "value",
+                            "type": "select",
+                            "label": "Column ID",
+                            "dynamic": true,
+                            "options": [],
+                            "required": true
+                        },
+                        "type": "array",
+                        "label": "Output Column Values"
+                    },
+                    {
+                        "name": "columnValue",
+                        "type": "text",
+                        "label": "Column Value",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "__IMTLENGTH__",
+                        "type": "uinteger",
+                        "label": "Total number of bundles"
+                    },
+                    {
+                        "name": "__IMTINDEX__",
+                        "type": "uinteger",
+                        "label": "Bundle order position"
+                    },
+                    {
+                        "name": "id",
+                        "type": "uinteger",
+                        "label": "ID"
+                    },
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Name"
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "date",
+                        "label": "Created at"
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "date",
+                        "label": "Updated at"
+                    },
+                    {
+                        "name": "board",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "uinteger",
+                                "label": "ID"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Board"
+                    },
+                    {
+                        "name": "creator_id",
+                        "type": "uinteger",
+                        "label": "Creator ID"
+                    },
+                    {
+                        "name": "group",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "ID"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Group"
+                    },
+                    {
+                        "name": "column_values",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "ID"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            },
+                            {
+                                "name": "additional_info",
+                                "type": "text",
+                                "label": "Additional Info"
+                            },
+                            {
+                                "name": "text",
+                                "type": "text",
+                                "label": "Text"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Column Values"
+                    },
+                    {
+                        "name": "mappable_column_values",
+                        "spec": [
+                            {
+                                "name": "project_owner",
+                                "spec": [
+                                    {
+                                        "name": "personsAndTeams",
+                                        "spec": [
+                                            {
+                                                "name": "id",
+                                                "type": "uinteger",
+                                                "label": "ID"
+                                            },
+                                            {
+                                                "name": "kind",
+                                                "type": "text",
+                                                "label": "Kind"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Persons and Teams"
+                                    },
+                                    {
+                                        "name": "changed_at",
+                                        "type": "date",
+                                        "label": "Changed at"
+                                    },
+                                    {
+                                        "name": "additonal_info",
+                                        "spec": [
+                                            {
+                                                "name": "label",
+                                                "type": "text",
+                                                "label": "Label"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Aditional info"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "any",
+                                        "label": "Value"
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Owner"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Mappable column values"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 32,
+            "module": "monday:listUsers",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1763503
+            },
+            "mapper": {
+                "kind": "all",
+                "name": "",
+                "email": "",
+                "limit": "25"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 450
+                },
+                "restore": {
+                    "expect": {
+                        "kind": {
+                            "label": "All"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "monday"
+                            },
+                            "label": "My Monday v2 connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:monday",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "email",
+                        "type": "email",
+                        "label": "Email"
+                    },
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Name"
+                    },
+                    {
+                        "name": "kind",
+                        "type": "select",
+                        "label": "Kind",
+                        "validate": {
+                            "enum": [
+                                "all",
+                                "non_guests",
+                                "guests",
+                                "non_pending"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "newest_first",
+                        "type": "boolean",
+                        "label": "Newest First"
+                    },
+                    {
+                        "name": "non_active",
+                        "type": "boolean",
+                        "label": "Non Active"
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 28,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 1500,
+                    "y": 450
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 29,
+                            "module": "monday:CreateItem",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 1763503
+                            },
+                            "filter": {
+                                "name": "item doesn't exist",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{27.id}}",
+                                            "o": "notexist"
+                                        },
+                                        {
+                                            "a": "{{32.email}}",
+                                            "b": "{{35.email}}",
+                                            "o": "text:equal"
+                                        },
+                                        {
+                                            "a": "{{20.task.name}}",
+                                            "o": "notexist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "name": "{{20.description}}",
+                                "boardId": "1873520842",
+                                "columnValuesToChange": [
+                                    {
+                                        "columnId": "text",
+                                        "columnValue": "{{20.id}}"
+                                    },
+                                    {
+                                        "columnId": "project_status",
+                                        "columnValue": {
+                                            "label": "Working on it",
+                                            "settings": "{\"done_colors\":[1],\"color_mapping\":{\"8\":11,\"11\":8},\"labels\":{\"0\":\"Working on it\",\"1\":\"Done\",\"2\":\"Stuck\",\"5\":\"Not Started\"},\"labels_positions_v2\":{\"0\":1,\"1\":0,\"2\":2,\"5\":3},\"labels_colors\":{\"0\":{\"color\":\"#fdab3d\",\"border\":\"#e99729\",\"var_name\":\"orange\"},\"1\":{\"color\":\"#00c875\",\"border\":\"#00b461\",\"var_name\":\"green-shadow\"},\"2\":{\"color\":\"#df2f4a\",\"border\":\"#ce3048\",\"var_name\":\"red-shadow\"},\"5\":{\"color\":\"#c4c4c4\",\"border\":\"#b0b0b0\",\"var_name\":\"grey\"}}}",
+                                            "selectType": "label2index"
+                                        }
+                                    },
+                                    {
+                                        "columnId": "project_owner",
+                                        "columnValue": {
+                                            "personsAndTeams": [
+                                                {
+                                                    "id": "{{32.id}}",
+                                                    "kind": "person"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "columnId": "text7",
+                                        "columnValue": "{{20.timeInterval.duration}}"
+                                    }
+                                ],
+                                "create_labels_if_missing": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1800,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "boardId": {
+                                            "mode": "chose",
+                                            "label": "My first project  ::  public"
+                                        },
+                                        "groupId": {
+                                            "mode": "chose"
+                                        },
+                                        "columnValuesToChange": {
+                                            "mode": "chose",
+                                            "items": [
+                                                {
+                                                    "columnId": {
+                                                        "mode": "chose",
+                                                        "label": "Entry ID"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": {
+                                                        "mode": "chose",
+                                                        "label": "Status"
+                                                    },
+                                                    "columnValue": {
+                                                        "nested": {
+                                                            "label": {
+                                                                "mode": "chose",
+                                                                "label": "Working on it"
+                                                            },
+                                                            "selectType": {
+                                                                "mode": "chose",
+                                                                "label": "Label"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": {
+                                                        "mode": "chose",
+                                                        "label": "Owner"
+                                                    },
+                                                    "columnValue": {
+                                                        "nested": {
+                                                            "personsAndTeams": {
+                                                                "mode": "chose",
+                                                                "items": [
+                                                                    {
+                                                                        "id": {
+                                                                            "mode": "edit"
+                                                                        },
+                                                                        "kind": {
+                                                                            "mode": "chose",
+                                                                            "label": "Person"
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": {
+                                                        "mode": "chose",
+                                                        "label": "Time"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "monday"
+                                            },
+                                            "label": "My Monday v2 connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:monday",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Item Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "boardId",
+                                        "type": "select",
+                                        "label": "Board ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "create_labels_if_missing",
+                                        "type": "boolean",
+                                        "label": "Create Labels if Missing",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "groupId",
+                                        "type": "select",
+                                        "label": "Group ID"
+                                    },
+                                    {
+                                        "name": "columnValuesToChange",
+                                        "spec": [
+                                            {
+                                                "name": "columnId",
+                                                "type": "select",
+                                                "label": "Column ID",
+                                                "dynamic": true,
+                                                "options": {
+                                                    "store": []
+                                                },
+                                                "required": true,
+                                                "validate": false
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Array of column values to change"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 30,
+                            "module": "monday:ChangeMultipleColumnValues",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 1763503
+                            },
+                            "filter": {
+                                "name": "item exist",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{27.id}}",
+                                            "o": "exist"
+                                        },
+                                        {
+                                            "a": "{{32.email}}",
+                                            "b": "{{35.email}}",
+                                            "o": "text:equal"
+                                        },
+                                        {
+                                            "a": "{{20.task.name}}",
+                                            "o": "notexist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "itemId": "{{27.id}}",
+                                "boardId": "1873520842",
+                                "columnValuesToChange": [
+                                    {
+                                        "columnId": "project_status",
+                                        "columnValue": {
+                                            "label": "Working on it",
+                                            "settings": "{\"done_colors\":[1],\"color_mapping\":{\"8\":11,\"11\":8},\"labels\":{\"0\":\"Working on it\",\"1\":\"Done\",\"2\":\"Stuck\",\"5\":\"Not Started\"},\"labels_positions_v2\":{\"0\":1,\"1\":0,\"2\":2,\"5\":3},\"labels_colors\":{\"0\":{\"color\":\"#fdab3d\",\"border\":\"#e99729\",\"var_name\":\"orange\"},\"1\":{\"color\":\"#00c875\",\"border\":\"#00b461\",\"var_name\":\"green-shadow\"},\"2\":{\"color\":\"#df2f4a\",\"border\":\"#ce3048\",\"var_name\":\"red-shadow\"},\"5\":{\"color\":\"#c4c4c4\",\"border\":\"#b0b0b0\",\"var_name\":\"grey\"}}}",
+                                            "selectType": "label2index"
+                                        }
+                                    },
+                                    {
+                                        "columnId": "text7",
+                                        "columnValue": "{{20.timeInterval.duration}}"
+                                    }
+                                ],
+                                "create_labels_if_missing": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1800,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "itemId": {
+                                            "mode": "edit"
+                                        },
+                                        "boardId": {
+                                            "mode": "chose",
+                                            "label": "My first project  ::  public"
+                                        },
+                                        "columnValuesToChange": {
+                                            "mode": "chose",
+                                            "items": [
+                                                {
+                                                    "columnId": {
+                                                        "mode": "chose",
+                                                        "label": "Status"
+                                                    },
+                                                    "columnValue": {
+                                                        "nested": {
+                                                            "label": {
+                                                                "mode": "chose",
+                                                                "label": "Working on it"
+                                                            },
+                                                            "selectType": {
+                                                                "mode": "chose",
+                                                                "label": "Label"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": {
+                                                        "mode": "chose",
+                                                        "label": "Time"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "monday"
+                                            },
+                                            "label": "My Monday v2 connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:monday",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "boardId",
+                                        "type": "select",
+                                        "label": "Board ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "create_labels_if_missing",
+                                        "type": "boolean",
+                                        "label": "Create Labels if Missing",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "itemId",
+                                        "type": "select",
+                                        "label": "Item ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "columnValuesToChange",
+                                        "spec": [
+                                            {
+                                                "name": "columnId",
+                                                "type": "select",
+                                                "label": "Column ID",
+                                                "dynamic": true,
+                                                "options": {
+                                                    "store": []
+                                                },
+                                                "required": true,
+                                                "validate": false
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Column Values to Change",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 36,
+                            "module": "clockify:findTasks",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 1806302
+                            },
+                            "filter": {
+                                "name": "if entry task exist",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{20.task.name}}",
+                                            "o": "exist"
+                                        },
+                                        {
+                                            "a": "{{32.email}}",
+                                            "b": "{{35.email}}",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "name": "{{20.task.name}}",
+                                "limit": "10",
+                                "project": "{{20.projectId}}",
+                                "is-active": true,
+                                "workspace": "665530b3c0eac57d4526c367"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1800,
+                                    "y": 750
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "project": {
+                                            "mode": "edit"
+                                        },
+                                        "is-active": {
+                                            "mode": "chose"
+                                        },
+                                        "workspace": {
+                                            "mode": "chose",
+                                            "label": "John Vincent Ramada's workspace"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "clockify"
+                                            },
+                                            "label": "My Clockify connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:clockify",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "workspace",
+                                        "type": "select",
+                                        "label": "Workspace ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "limit",
+                                        "type": "uinteger",
+                                        "label": "Limit"
+                                    },
+                                    {
+                                        "name": "project",
+                                        "type": "select",
+                                        "label": "Project ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Name"
+                                    },
+                                    {
+                                        "name": "is-active",
+                                        "type": "boolean",
+                                        "label": "Active"
+                                    },
+                                    {
+                                        "name": "workspace",
+                                        "type": "select",
+                                        "label": "Workspace ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "limit",
+                                        "type": "uinteger",
+                                        "label": "Limit"
+                                    },
+                                    {
+                                        "name": "project",
+                                        "type": "select",
+                                        "label": "Project ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Name"
+                                    },
+                                    {
+                                        "name": "is-active",
+                                        "type": "boolean",
+                                        "label": "Active"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 37,
+                            "module": "regexp:Parser",
+                            "version": 1,
+                            "parameters": {
+                                "global": false,
+                                "pattern": "(?<Task>^[^-]+)-(?<ID>.+$)",
+                                "multiline": false,
+                                "sensitive": true,
+                                "singleline": false,
+                                "continueWhenNoRes": false
+                            },
+                            "mapper": {
+                                "text": "{{36.name}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2100,
+                                    "y": 750
+                                },
+                                "restore": {},
+                                "parameters": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "continueWhenNoRes",
+                                        "type": "boolean",
+                                        "label": "Continue the execution of the route even if the module finds no matches",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "Task",
+                                        "type": "text",
+                                        "label": "Task"
+                                    },
+                                    {
+                                        "name": "ID",
+                                        "type": "text",
+                                        "label": "ID"
+                                    }
+                                ]
+                            },
+                            "onerror": [
+                                {
+                                    "id": 40,
+                                    "module": "slack:CreateMessage",
+                                    "version": 4,
+                                    "parameters": {
+                                        "__IMTCONN__": 1676835
+                                    },
+                                    "mapper": {
+                                        "text": "{{37.error.type}}\n{{37.error.message}}",
+                                        "parse": false,
+                                        "mrkdwn": true,
+                                        "channel": "C074EPVBG4U",
+                                        "channelType": "public",
+                                        "channelWType": "list"
+                                    },
+                                    "metadata": {
+                                        "designer": {
+                                            "x": 2400,
+                                            "y": 900
+                                        },
+                                        "restore": {
+                                            "expect": {
+                                                "parse": {
+                                                    "mode": "chose"
+                                                },
+                                                "mrkdwn": {
+                                                    "mode": "chose"
+                                                },
+                                                "channel": {
+                                                    "mode": "chose",
+                                                    "label": "bot-handle-error"
+                                                },
+                                                "link_names": {
+                                                    "mode": "chose"
+                                                },
+                                                "channelType": {
+                                                    "label": "Public channel"
+                                                },
+                                                "channelWType": {
+                                                    "label": "Select from the list"
+                                                },
+                                                "unfurl_links": {
+                                                    "mode": "chose"
+                                                },
+                                                "unfurl_media": {
+                                                    "mode": "chose"
+                                                },
+                                                "reply_broadcast": {
+                                                    "mode": "chose"
+                                                }
+                                            },
+                                            "parameters": {
+                                                "__IMTCONN__": {
+                                                    "data": {
+                                                        "scoped": "true",
+                                                        "connection": "slack3"
+                                                    },
+                                                    "label": "My Slack (bot) connection (a-bot)"
+                                                }
+                                            }
+                                        },
+                                        "parameters": [
+                                            {
+                                                "name": "__IMTCONN__",
+                                                "type": "account:slack2,slack3",
+                                                "label": "Connection",
+                                                "required": true
+                                            }
+                                        ],
+                                        "expect": [
+                                            {
+                                                "name": "channelWType",
+                                                "type": "select",
+                                                "label": "Enter a channel ID or name",
+                                                "required": true,
+                                                "validate": {
+                                                    "enum": [
+                                                        "manualy",
+                                                        "list"
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "name": "text",
+                                                "type": "text",
+                                                "label": "Text"
+                                            },
+                                            {
+                                                "name": "blocks",
+                                                "type": "text",
+                                                "label": "Blocks"
+                                            },
+                                            {
+                                                "name": "thread_ts",
+                                                "type": "text",
+                                                "label": "Thread message ID (time stamp)"
+                                            },
+                                            {
+                                                "name": "reply_broadcast",
+                                                "type": "boolean",
+                                                "label": "Reply broadcast"
+                                            },
+                                            {
+                                                "name": "link_names",
+                                                "type": "boolean",
+                                                "label": "Link names"
+                                            },
+                                            {
+                                                "name": "parse",
+                                                "type": "boolean",
+                                                "label": "Parse message text"
+                                            },
+                                            {
+                                                "name": "mrkdwn",
+                                                "type": "boolean",
+                                                "label": "Use markdown"
+                                            },
+                                            {
+                                                "name": "unfurl_links",
+                                                "type": "boolean",
+                                                "label": "Unfurl primarily text-based content"
+                                            },
+                                            {
+                                                "name": "unfurl_media",
+                                                "type": "boolean",
+                                                "label": "Unfurl media content"
+                                            },
+                                            {
+                                                "name": "icon_emoji",
+                                                "type": "text",
+                                                "label": "Icon emoji"
+                                            },
+                                            {
+                                                "name": "icon_url",
+                                                "type": "url",
+                                                "label": "Icon url"
+                                            },
+                                            {
+                                                "name": "username",
+                                                "type": "text",
+                                                "label": "User name"
+                                            },
+                                            {
+                                                "name": "channelType",
+                                                "type": "select",
+                                                "label": "Channel type",
+                                                "required": true,
+                                                "validate": {
+                                                    "enum": [
+                                                        "public",
+                                                        "private",
+                                                        "im",
+                                                        "mpim"
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "name": "channel",
+                                                "type": "select",
+                                                "label": "Public channel",
+                                                "required": true
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "id": 38,
+                            "module": "util:SetVariable2",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "name": "Task",
+                                "scope": "roundtrip",
+                                "value": "{{37.Task}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2400,
+                                    "y": 600
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "scope": {
+                                            "label": "One cycle"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Variable name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "scope",
+                                        "type": "select",
+                                        "label": "Variable lifetime",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "roundtrip",
+                                                "execution"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "any",
+                                        "label": "Variable value"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "Task",
+                                        "type": "any",
+                                        "label": "Task"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 39,
+                            "module": "util:SetVariable2",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "name": "id",
+                                "scope": "roundtrip",
+                                "value": "{{37.ID}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2700,
+                                    "y": 600
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "scope": {
+                                            "label": "One cycle"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Variable name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "scope",
+                                        "type": "select",
+                                        "label": "Variable lifetime",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "roundtrip",
+                                                "execution"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "any",
+                                        "label": "Variable value"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "any",
+                                        "label": "id"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 41,
+                            "module": "monday:createSubitem",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 1763503
+                            },
+                            "mapper": {
+                                "name": "{{20.description}}",
+                                "itemId": "{{39.id}}",
+                                "boardId": "1873520842",
+                                "columnValuesToChange": [
+                                    {
+                                        "columnId": "text",
+                                        "columnValue": "{{20.id}}",
+                                        "columnDataType": "text"
+                                    },
+                                    {
+                                        "columnId": "text6",
+                                        "columnValue": "{{20.timeInterval.duration}}",
+                                        "columnDataType": "text"
+                                    }
+                                ],
+                                "create_labels_if_missing": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 3000,
+                                    "y": 600
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "itemId": {
+                                            "mode": "edit"
+                                        },
+                                        "boardId": {
+                                            "mode": "chose",
+                                            "label": "My first project  ::  public"
+                                        },
+                                        "columnValuesToChange": {
+                                            "mode": "chose",
+                                            "items": [
+                                                {
+                                                    "columnDataType": {
+                                                        "mode": "chose",
+                                                        "label": "Text"
+                                                    }
+                                                },
+                                                {
+                                                    "columnDataType": {
+                                                        "mode": "chose",
+                                                        "label": "Text"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "monday"
+                                            },
+                                            "label": "My Monday v2 connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:monday",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "boardId",
+                                        "type": "select",
+                                        "label": "Board ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "create_labels_if_missing",
+                                        "type": "boolean",
+                                        "label": "Create Labels if Missing",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "itemId",
+                                        "type": "select",
+                                        "label": "Item ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Subitem Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "columnValuesToChange",
+                                        "spec": [
+                                            {
+                                                "name": "columnId",
+                                                "type": "text",
+                                                "label": "Column ID",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "columnDataType",
+                                                "type": "select",
+                                                "label": "Column Type",
+                                                "options": {
+                                                    "store": [
+                                                        {
+                                                            "label": "Any Value",
+                                                            "value": "any"
+                                                        },
+                                                        {
+                                                            "label": "Text",
+                                                            "value": "text"
+                                                        },
+                                                        {
+                                                            "label": "Numbers",
+                                                            "value": "numbers"
+                                                        },
+                                                        {
+                                                            "label": "Date",
+                                                            "value": "date"
+                                                        },
+                                                        {
+                                                            "label": "Name",
+                                                            "value": "name"
+                                                        },
+                                                        {
+                                                            "label": "Checkbox",
+                                                            "value": "checkbox"
+                                                        },
+                                                        {
+                                                            "label": "Status",
+                                                            "value": "status"
+                                                        },
+                                                        {
+                                                            "label": "Tags",
+                                                            "value": "tags"
+                                                        },
+                                                        {
+                                                            "label": "Email",
+                                                            "value": "email"
+                                                        },
+                                                        {
+                                                            "label": "Phone",
+                                                            "value": "phone"
+                                                        },
+                                                        {
+                                                            "label": "Team",
+                                                            "value": "team"
+                                                        },
+                                                        {
+                                                            "label": "Link",
+                                                            "value": "link"
+                                                        },
+                                                        {
+                                                            "label": "Dropdown",
+                                                            "value": "dropdown"
+                                                        },
+                                                        {
+                                                            "label": "People",
+                                                            "value": "people"
+                                                        },
+                                                        {
+                                                            "label": "Timeline",
+                                                            "value": "timeline"
+                                                        },
+                                                        {
+                                                            "label": "Long Text",
+                                                            "value": "long_text"
+                                                        },
+                                                        {
+                                                            "label": "World Clock",
+                                                            "value": "world_clock"
+                                                        },
+                                                        {
+                                                            "label": "Country",
+                                                            "value": "country"
+                                                        },
+                                                        {
+                                                            "label": "Location",
+                                                            "value": "location"
+                                                        },
+                                                        {
+                                                            "label": "Hour",
+                                                            "value": "hour"
+                                                        },
+                                                        {
+                                                            "label": "Week",
+                                                            "value": "week"
+                                                        },
+                                                        {
+                                                            "label": "Rating",
+                                                            "value": "rating"
+                                                        }
+                                                    ]
+                                                },
+                                                "required": true,
+                                                "validate": false
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Array of column values to change"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com"
+    }
+}
