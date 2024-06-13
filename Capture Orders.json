@@ -1,0 +1,2669 @@
+{
+    "name": "Capture Orders",
+    "flow": [
+        {
+            "id": 2,
+            "module": "vapi:endOfCallReport",
+            "version": 1,
+            "parameters": {
+                "__IMTHOOK__": 623580
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 150
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTHOOK__": {
+                            "data": {
+                                "editable": "false"
+                            },
+                            "label": "My Vapi Webhook webhook"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTHOOK__",
+                        "type": "hook:vapi",
+                        "label": "Webhook",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 17,
+            "module": "util:SetVariable2",
+            "version": 1,
+            "parameters": {},
+            "filter": {
+                "name": "",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{2.transcript}}",
+                            "o": "exist"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "name": "call",
+                "scope": "roundtrip",
+                "value": "{{2.call}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Variable name",
+                        "required": true
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "value",
+                        "type": "any",
+                        "label": "Variable value"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "call",
+                        "type": "any",
+                        "label": "call"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 4,
+            "module": "http:ActionSendData",
+            "version": 3,
+            "parameters": {
+                "handleErrors": false,
+                "useNewZLibDeCompress": true
+            },
+            "mapper": {
+                "ca": "",
+                "qs": [],
+                "url": "https://api.vapi.ai/call/{{17.call.id}}",
+                "gzip": true,
+                "method": "get",
+                "headers": [
+                    {
+                        "name": "Authorization",
+                        "value": "Bearer d821a3f9-a72b-436c-889b-994ab18924c1"
+                    }
+                ],
+                "timeout": "",
+                "useMtls": false,
+                "authPass": "",
+                "authUser": "",
+                "bodyType": "",
+                "serializeUrl": false,
+                "shareCookies": false,
+                "parseResponse": false,
+                "followRedirect": true,
+                "useQuerystring": false,
+                "followAllRedirects": false,
+                "rejectUnauthorized": true
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "qs": {
+                            "mode": "chose"
+                        },
+                        "method": {
+                            "mode": "chose",
+                            "label": "GET"
+                        },
+                        "headers": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        },
+                        "bodyType": {
+                            "label": "Empty"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "handleErrors",
+                        "type": "boolean",
+                        "label": "Evaluate all states as errors (except for 2xx and 3xx )",
+                        "required": true
+                    },
+                    {
+                        "name": "useNewZLibDeCompress",
+                        "type": "hidden"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "serializeUrl",
+                        "type": "boolean",
+                        "label": "Serialize URL",
+                        "required": true
+                    },
+                    {
+                        "name": "method",
+                        "type": "select",
+                        "label": "Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "get",
+                                "head",
+                                "post",
+                                "put",
+                                "patch",
+                                "delete",
+                                "options"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Headers"
+                    },
+                    {
+                        "name": "qs",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Query String"
+                    },
+                    {
+                        "name": "bodyType",
+                        "type": "select",
+                        "label": "Body type",
+                        "validate": {
+                            "enum": [
+                                "raw",
+                                "x_www_form_urlencoded",
+                                "multipart_form_data"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "parseResponse",
+                        "type": "boolean",
+                        "label": "Parse response",
+                        "required": true
+                    },
+                    {
+                        "name": "authUser",
+                        "type": "text",
+                        "label": "User name"
+                    },
+                    {
+                        "name": "authPass",
+                        "type": "password",
+                        "label": "Password"
+                    },
+                    {
+                        "name": "timeout",
+                        "type": "uinteger",
+                        "label": "Timeout",
+                        "validate": {
+                            "max": 300,
+                            "min": 1
+                        }
+                    },
+                    {
+                        "name": "shareCookies",
+                        "type": "boolean",
+                        "label": "Share cookies with other HTTP modules",
+                        "required": true
+                    },
+                    {
+                        "name": "ca",
+                        "type": "cert",
+                        "label": "Self-signed certificate"
+                    },
+                    {
+                        "name": "rejectUnauthorized",
+                        "type": "boolean",
+                        "label": "Reject connections that are using unverified (self-signed) certificates",
+                        "required": true
+                    },
+                    {
+                        "name": "followRedirect",
+                        "type": "boolean",
+                        "label": "Follow redirect",
+                        "required": true
+                    },
+                    {
+                        "name": "useQuerystring",
+                        "type": "boolean",
+                        "label": "Disable serialization of multiple same query string keys as arrays",
+                        "required": true
+                    },
+                    {
+                        "name": "gzip",
+                        "type": "boolean",
+                        "label": "Request compressed content",
+                        "required": true
+                    },
+                    {
+                        "name": "useMtls",
+                        "type": "boolean",
+                        "label": "Use Mutual TLS",
+                        "required": true
+                    },
+                    {
+                        "name": "followAllRedirects",
+                        "type": "boolean",
+                        "label": "Follow all redirect",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "json:ParseJSON",
+            "version": 1,
+            "parameters": {
+                "type": 65555
+            },
+            "mapper": {
+                "json": "{{4.data}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 150
+                },
+                "restore": {
+                    "parameters": {
+                        "type": {
+                            "label": "My data structure"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "type",
+                        "type": "udt",
+                        "label": "Data structure"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "json",
+                        "type": "text",
+                        "label": "JSON string",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "assistantId",
+                        "type": "text",
+                        "label": "Assistant ID",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "type",
+                        "type": "text",
+                        "label": "Type",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "startedAt",
+                        "type": "date",
+                        "label": "Started At",
+                        "required": false
+                    },
+                    {
+                        "name": "endedAt",
+                        "type": "date",
+                        "label": "Ended At",
+                        "required": false
+                    },
+                    {
+                        "name": "transcript",
+                        "type": "text",
+                        "label": "Transcript",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "recordingUrl",
+                        "type": "text",
+                        "label": "Recording Url",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "summary",
+                        "type": "text",
+                        "label": "Summary",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "date",
+                        "label": "Created At",
+                        "required": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "date",
+                        "label": "Updated At",
+                        "required": false
+                    },
+                    {
+                        "name": "orgId",
+                        "type": "text",
+                        "label": "Org ID",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "cost",
+                        "type": "number",
+                        "label": "Cost",
+                        "default": null,
+                        "required": false
+                    },
+                    {
+                        "name": "webCallUrl",
+                        "type": "text",
+                        "label": "Web Call Url",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "text",
+                        "label": "Status",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "endedReason",
+                        "type": "text",
+                        "label": "Ended Reason",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "messages",
+                        "spec": {
+                            "spec": [
+                                {
+                                    "name": "role",
+                                    "type": "text",
+                                    "label": null,
+                                    "default": null,
+                                    "required": false,
+                                    "multiline": false
+                                },
+                                {
+                                    "name": "time",
+                                    "type": "number",
+                                    "label": null,
+                                    "default": null,
+                                    "required": false
+                                },
+                                {
+                                    "name": "message",
+                                    "type": "text",
+                                    "label": null,
+                                    "default": null,
+                                    "required": false,
+                                    "multiline": false
+                                },
+                                {
+                                    "name": "secondsFromStart",
+                                    "type": "number",
+                                    "label": null,
+                                    "default": null,
+                                    "required": false
+                                }
+                            ],
+                            "type": "collection",
+                            "required": false
+                        },
+                        "type": "array",
+                        "label": "Messages",
+                        "required": false
+                    },
+                    {
+                        "name": "stereoRecordingUrl",
+                        "type": "text",
+                        "label": "Stereo Recording Url",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "name": "costBreakdown",
+                        "spec": [
+                            {
+                                "name": "llm",
+                                "type": "number",
+                                "label": null,
+                                "default": null,
+                                "required": false
+                            },
+                            {
+                                "name": "stt",
+                                "type": "number",
+                                "label": null,
+                                "default": null,
+                                "required": false
+                            },
+                            {
+                                "name": "tts",
+                                "type": "number",
+                                "label": null,
+                                "default": null,
+                                "required": false
+                            },
+                            {
+                                "name": "vapi",
+                                "type": "number",
+                                "label": null,
+                                "default": null,
+                                "required": false
+                            },
+                            {
+                                "name": "total",
+                                "type": "number",
+                                "label": null,
+                                "default": null,
+                                "required": false
+                            },
+                            {
+                                "name": "llmPromptTokens",
+                                "type": "number",
+                                "label": null,
+                                "default": null,
+                                "required": false
+                            },
+                            {
+                                "name": "llmCompletionTokens",
+                                "type": "number",
+                                "label": null,
+                                "default": null,
+                                "required": false
+                            },
+                            {
+                                "name": "analysisCostBreakdown",
+                                "spec": [
+                                    {
+                                        "name": "summary",
+                                        "type": "number",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false
+                                    },
+                                    {
+                                        "name": "structuredData",
+                                        "type": "number",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false
+                                    },
+                                    {
+                                        "name": "successEvaluation",
+                                        "type": "number",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false
+                                    },
+                                    {
+                                        "name": "summaryPromptTokens",
+                                        "type": "number",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false
+                                    },
+                                    {
+                                        "name": "summaryCompletionTokens",
+                                        "type": "number",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false
+                                    },
+                                    {
+                                        "name": "structuredDataPromptTokens",
+                                        "type": "number",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false
+                                    },
+                                    {
+                                        "name": "successEvaluationPromptTokens",
+                                        "type": "number",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false
+                                    },
+                                    {
+                                        "name": "structuredDataCompletionTokens",
+                                        "type": "number",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false
+                                    },
+                                    {
+                                        "name": "successEvaluationCompletionTokens",
+                                        "type": "number",
+                                        "label": null,
+                                        "default": null,
+                                        "required": false
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": null,
+                                "required": false
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Cost Breakdown",
+                        "required": false
+                    },
+                    {
+                        "name": "analysis",
+                        "spec": [
+                            {
+                                "name": "successEvaluation",
+                                "type": "text",
+                                "label": null,
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Analysis",
+                        "required": false
+                    }
+                ]
+            }
+        },
+        {
+            "id": 6,
+            "module": "openai-gpt-3:CreateCompletion",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1667283
+            },
+            "mapper": {
+                "model": "gpt-4",
+                "top_p": "1",
+                "select": "chat",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "You are a smart assistant that helps in extracting customer information and order details from conversations. Given the following conversation, identify and extract the customer's name, phone number, address, and order details, and format them as a JSON object.\n\nRules: \nseparate the first name and last name of the customer\n\nInstructions:\nExtract the following details from the conversation:\n\nCustomer's First Name\nCustomer's Last Name\nPhone Number\nAddress\nOrder Details\n\nOutput Format:\n{\n  \"customer_firstname\": \"John Carlo\",\n  \"customer_lastname\": \"Santos\",\n  \"phone_number\": \"09098763675\",\n  \"address\": \"Bebe Caragara Latei\",\n  \"order_details\": {\n    \"product\": \"Fuji apples\",\n    \"quantity\": \"5 pounds\"\n  }\n}"
+                    },
+                    {
+                        "role": "user",
+                        "content": "Conversation:\n{{5.transcript}}"
+                    }
+                ],
+                "max_tokens": "250",
+                "temperature": "1",
+                "n_completions": "1",
+                "response_format": "text"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "stop": {
+                            "mode": "chose"
+                        },
+                        "model": {
+                            "mode": "chose",
+                            "label": "gpt-4"
+                        },
+                        "select": {
+                            "label": "Create a Chat Completion (GPT Models)"
+                        },
+                        "messages": {
+                            "mode": "chose",
+                            "items": [
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "System"
+                                    }
+                                },
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "User"
+                                    }
+                                }
+                            ]
+                        },
+                        "logit_bias": {
+                            "mode": "chose"
+                        },
+                        "response_format": {
+                            "mode": "chose",
+                            "label": "Text"
+                        },
+                        "additionalParameters": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            },
+                            "label": "Open Ai Paul"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Select Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "chat",
+                                "prompt"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "max_tokens",
+                        "type": "number",
+                        "label": "Max Tokens",
+                        "required": true
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                            "max": 2,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "top_p",
+                        "type": "number",
+                        "label": "Top P",
+                        "validate": {
+                            "max": 1,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "n_completions",
+                        "type": "number",
+                        "label": "Number"
+                    },
+                    {
+                        "name": "frequency_penalty",
+                        "type": "number",
+                        "label": "Frequency Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "presence_penalty",
+                        "type": "number",
+                        "label": "Presence Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "logit_bias",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "token",
+                                    "type": "text",
+                                    "label": "Token ID",
+                                    "required": true
+                                },
+                                {
+                                    "name": "probability",
+                                    "type": "number",
+                                    "label": "Probability",
+                                    "required": true,
+                                    "validate": {
+                                        "max": 100,
+                                        "min": -100
+                                    }
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Token Probability"
+                        },
+                        "type": "array",
+                        "label": "Token Probability"
+                    },
+                    {
+                        "name": "response_format",
+                        "type": "select",
+                        "label": "Response Format",
+                        "validate": {
+                            "enum": [
+                                "text",
+                                "json_object"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "seed",
+                        "type": "integer",
+                        "label": "Seed"
+                    },
+                    {
+                        "name": "stop",
+                        "spec": {
+                            "name": "value",
+                            "type": "text",
+                            "label": "Stop Sequence"
+                        },
+                        "type": "array",
+                        "label": "Stop Sequences",
+                        "validate": {
+                            "maxItems": 4
+                        }
+                    },
+                    {
+                        "name": "additionalParameters",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "key",
+                                    "type": "text",
+                                    "label": "Parameter Name",
+                                    "required": true
+                                },
+                                {
+                                    "name": "type",
+                                    "type": "select",
+                                    "label": "Input Type",
+                                    "options": [
+                                        {
+                                            "label": "Text",
+                                            "value": "text",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ],
+                                            "default": true
+                                        },
+                                        {
+                                            "label": "Number",
+                                            "value": "number",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "number",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Boolean",
+                                            "value": "boolean",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "boolean",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Date",
+                                            "value": "date",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "date",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Any",
+                                            "value": "any",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "any",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Input Parameter"
+                        },
+                        "type": "array",
+                        "label": "Other Input Parameters"
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    },
+                    {
+                        "name": "messages",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "role",
+                                    "type": "select",
+                                    "label": "Role",
+                                    "options": [
+                                        {
+                                            "label": "System",
+                                            "value": "system"
+                                        },
+                                        {
+                                            "label": "User",
+                                            "value": "user"
+                                        },
+                                        {
+                                            "label": "Assistant",
+                                            "value": "assistant"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                {
+                                    "name": "content",
+                                    "type": "text",
+                                    "label": "Message Content"
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Message"
+                        },
+                        "type": "array",
+                        "label": "Messages",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 8,
+            "module": "json:ParseJSON",
+            "version": 1,
+            "parameters": {
+                "type": ""
+            },
+            "mapper": {
+                "json": "{{6.result}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1500,
+                    "y": 150
+                },
+                "restore": {
+                    "parameters": {
+                        "type": {
+                            "label": "Choose a data structure"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "type",
+                        "type": "udt",
+                        "label": "Data structure"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "json",
+                        "type": "text",
+                        "label": "JSON string",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 9,
+            "module": "hubspotcrm:SearchContacts",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 1686318
+            },
+            "mapper": {
+                "limit": "10",
+                "query": "{{8.customer_firstname}}",
+                "direction": "DESCENDING",
+                "parseCustomFields": true
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1800,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "direction": {
+                            "label": "Descending"
+                        },
+                        "propertyName": {
+                            "mode": "chose"
+                        },
+                        "outputProperties": {
+                            "mode": "chose"
+                        },
+                        "parseCustomFields": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "hubspotcrm"
+                            },
+                            "label": "My HubSpot CRM connection (vincent.ramiso14@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:hubspotcrm",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "outputProperties",
+                        "type": "select",
+                        "label": "Output Properties",
+                        "multiple": true
+                    },
+                    {
+                        "name": "query",
+                        "type": "text",
+                        "label": "Query"
+                    },
+                    {
+                        "name": "filter",
+                        "type": "filter",
+                        "label": "Filter search results",
+                        "options": {
+                            "store": [
+                                {
+                                    "label": "Annual Revenue",
+                                    "value": "annualrevenue"
+                                },
+                                {
+                                    "label": "Average Pageviews",
+                                    "value": "hs_analytics_average_page_views"
+                                },
+                                {
+                                    "label": "Became a Customer Date",
+                                    "value": "hs_lifecyclestage_customer_date"
+                                },
+                                {
+                                    "label": "Became a Lead Date",
+                                    "value": "hs_lifecyclestage_lead_date"
+                                },
+                                {
+                                    "label": "Became a Marketing Qualified Lead Date",
+                                    "value": "hs_lifecyclestage_marketingqualifiedlead_date"
+                                },
+                                {
+                                    "label": "Became a Sales Qualified Lead Date",
+                                    "value": "hs_lifecyclestage_salesqualifiedlead_date"
+                                },
+                                {
+                                    "label": "Became a Subscriber Date",
+                                    "value": "hs_lifecyclestage_subscriber_date"
+                                },
+                                {
+                                    "label": "Became an Evangelist Date",
+                                    "value": "hs_lifecyclestage_evangelist_date"
+                                },
+                                {
+                                    "label": "Became an Opportunity Date",
+                                    "value": "hs_lifecyclestage_opportunity_date"
+                                },
+                                {
+                                    "label": "Became an Other Lifecycle Date",
+                                    "value": "hs_lifecyclestage_other_date"
+                                },
+                                {
+                                    "label": "Broadcast Clicks",
+                                    "value": "hs_social_num_broadcast_clicks"
+                                },
+                                {
+                                    "label": "Business units",
+                                    "value": "hs_all_assigned_business_unit_ids"
+                                },
+                                {
+                                    "label": "Buying Role",
+                                    "value": "hs_buying_role"
+                                },
+                                {
+                                    "label": "Campaign of last booking in meetings tool",
+                                    "value": "engagements_last_meeting_booked_campaign"
+                                },
+                                {
+                                    "label": "City",
+                                    "value": "city"
+                                },
+                                {
+                                    "label": "Close Date",
+                                    "value": "closedate"
+                                },
+                                {
+                                    "label": "Company Name",
+                                    "value": "company"
+                                },
+                                {
+                                    "label": "Company size",
+                                    "value": "company_size"
+                                },
+                                {
+                                    "label": "Contact Enrichment Opt Out",
+                                    "value": "hs_contact_enrichment_opt_out"
+                                },
+                                {
+                                    "label": "Contact owner",
+                                    "value": "hubspot_owner_id"
+                                },
+                                {
+                                    "label": "Contact priority",
+                                    "value": "hs_predictivescoringtier"
+                                },
+                                {
+                                    "label": "Contact unworked",
+                                    "value": "hs_is_unworked"
+                                },
+                                {
+                                    "label": "Country/Region",
+                                    "value": "country"
+                                },
+                                {
+                                    "label": "Create Date",
+                                    "value": "createdate"
+                                },
+                                {
+                                    "label": "Created by user ID",
+                                    "value": "hs_created_by_user_id"
+                                },
+                                {
+                                    "label": "Cumulative time in \"Customer (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_cumulative_time_in_customer"
+                                },
+                                {
+                                    "label": "Cumulative time in \"Evangelist (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_cumulative_time_in_evangelist"
+                                },
+                                {
+                                    "label": "Cumulative time in \"Lead (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_cumulative_time_in_lead"
+                                },
+                                {
+                                    "label": "Cumulative time in \"Marketing Qualified Lead (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_cumulative_time_in_marketingqualifiedlead"
+                                },
+                                {
+                                    "label": "Cumulative time in \"Opportunity (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_cumulative_time_in_opportunity"
+                                },
+                                {
+                                    "label": "Cumulative time in \"Other (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_cumulative_time_in_other"
+                                },
+                                {
+                                    "label": "Cumulative time in \"Sales Qualified Lead (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_cumulative_time_in_salesqualifiedlead"
+                                },
+                                {
+                                    "label": "Cumulative time in \"Subscriber (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_cumulative_time_in_subscriber"
+                                },
+                                {
+                                    "label": "Currently in Sequence",
+                                    "value": "hs_sequences_is_enrolled"
+                                },
+                                {
+                                    "label": "Currently in workflow",
+                                    "value": "currentlyinworkflow"
+                                },
+                                {
+                                    "label": "Date entered \"Customer (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_entered_customer"
+                                },
+                                {
+                                    "label": "Date entered \"Evangelist (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_entered_evangelist"
+                                },
+                                {
+                                    "label": "Date entered \"Lead (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_entered_lead"
+                                },
+                                {
+                                    "label": "Date entered \"Marketing Qualified Lead (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_entered_marketingqualifiedlead"
+                                },
+                                {
+                                    "label": "Date entered \"Opportunity (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_entered_opportunity"
+                                },
+                                {
+                                    "label": "Date entered \"Other (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_entered_other"
+                                },
+                                {
+                                    "label": "Date entered \"Sales Qualified Lead (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_entered_salesqualifiedlead"
+                                },
+                                {
+                                    "label": "Date entered \"Subscriber (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_entered_subscriber"
+                                },
+                                {
+                                    "label": "Date exited \"Customer (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_exited_customer"
+                                },
+                                {
+                                    "label": "Date exited \"Evangelist (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_exited_evangelist"
+                                },
+                                {
+                                    "label": "Date exited \"Lead (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_exited_lead"
+                                },
+                                {
+                                    "label": "Date exited \"Marketing Qualified Lead (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_exited_marketingqualifiedlead"
+                                },
+                                {
+                                    "label": "Date exited \"Opportunity (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_exited_opportunity"
+                                },
+                                {
+                                    "label": "Date exited \"Other (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_exited_other"
+                                },
+                                {
+                                    "label": "Date exited \"Sales Qualified Lead (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_exited_salesqualifiedlead"
+                                },
+                                {
+                                    "label": "Date exited \"Subscriber (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_date_exited_subscriber"
+                                },
+                                {
+                                    "label": "Date of birth",
+                                    "value": "date_of_birth"
+                                },
+                                {
+                                    "label": "Date of first engagement",
+                                    "value": "hs_sa_first_engagement_date"
+                                },
+                                {
+                                    "label": "Date of last meeting booked in meetings tool",
+                                    "value": "engagements_last_meeting_booked"
+                                },
+                                {
+                                    "label": "Days To Close",
+                                    "value": "days_to_close"
+                                },
+                                {
+                                    "label": "Degree",
+                                    "value": "degree"
+                                },
+                                {
+                                    "label": "Description of first engagement",
+                                    "value": "hs_sa_first_engagement_descr"
+                                },
+                                {
+                                    "label": "Domain to which registration email was sent",
+                                    "value": "hs_content_membership_registration_domain_sent_to"
+                                },
+                                {
+                                    "label": "Email",
+                                    "value": "email"
+                                },
+                                {
+                                    "label": "Email Address Quarantined",
+                                    "value": "hs_email_quarantined"
+                                },
+                                {
+                                    "label": "Email Confirmed",
+                                    "value": "hs_content_membership_email_confirmed"
+                                },
+                                {
+                                    "label": "Email Domain",
+                                    "value": "hs_email_domain"
+                                },
+                                {
+                                    "label": "Email address automated quarantine reason",
+                                    "value": "hs_email_quarantined_reason"
+                                },
+                                {
+                                    "label": "Email address quarantine reason",
+                                    "value": "hs_email_customer_quarantined_reason"
+                                },
+                                {
+                                    "label": "Email hard bounce reason",
+                                    "value": "hs_email_hard_bounce_reason_enum"
+                                },
+                                {
+                                    "label": "Event Revenue",
+                                    "value": "hs_analytics_revenue"
+                                },
+                                {
+                                    "label": "Facebook Clicks",
+                                    "value": "hs_social_facebook_clicks"
+                                },
+                                {
+                                    "label": "Facebook click id",
+                                    "value": "hs_facebook_click_id"
+                                },
+                                {
+                                    "label": "Fax Number",
+                                    "value": "fax"
+                                },
+                                {
+                                    "label": "Field of study",
+                                    "value": "field_of_study"
+                                },
+                                {
+                                    "label": "First Conversion",
+                                    "value": "first_conversion_event_name"
+                                },
+                                {
+                                    "label": "First Conversion Date",
+                                    "value": "first_conversion_date"
+                                },
+                                {
+                                    "label": "First Deal Created Date",
+                                    "value": "first_deal_created_date"
+                                },
+                                {
+                                    "label": "First Name",
+                                    "value": "firstname"
+                                },
+                                {
+                                    "label": "First Page Seen",
+                                    "value": "hs_analytics_first_url"
+                                },
+                                {
+                                    "label": "First Referring Site",
+                                    "value": "hs_analytics_first_referrer"
+                                },
+                                {
+                                    "label": "First Touch Converting Campaign",
+                                    "value": "hs_analytics_first_touch_converting_campaign"
+                                },
+                                {
+                                    "label": "First marketing email click date",
+                                    "value": "hs_email_first_click_date"
+                                },
+                                {
+                                    "label": "First marketing email open date",
+                                    "value": "hs_email_first_open_date"
+                                },
+                                {
+                                    "label": "First marketing email reply date",
+                                    "value": "hs_email_first_reply_date"
+                                },
+                                {
+                                    "label": "First marketing email send date",
+                                    "value": "hs_email_first_send_date"
+                                },
+                                {
+                                    "label": "Follower Count",
+                                    "value": "followercount"
+                                },
+                                {
+                                    "label": "Gender",
+                                    "value": "gender"
+                                },
+                                {
+                                    "label": "Google Plus Clicks",
+                                    "value": "hs_social_google_plus_clicks"
+                                },
+                                {
+                                    "label": "Google ad click id",
+                                    "value": "hs_google_click_id"
+                                },
+                                {
+                                    "label": "Graduation date",
+                                    "value": "graduation_date"
+                                },
+                                {
+                                    "label": "HubSpot Score",
+                                    "value": "hubspotscore"
+                                },
+                                {
+                                    "label": "HubSpot Team",
+                                    "value": "hubspot_team_id"
+                                },
+                                {
+                                    "label": "ID of first engagement",
+                                    "value": "hs_first_engagement_object_id"
+                                },
+                                {
+                                    "label": "IP City",
+                                    "value": "ip_city"
+                                },
+                                {
+                                    "label": "IP Country",
+                                    "value": "ip_country"
+                                },
+                                {
+                                    "label": "IP Country Code",
+                                    "value": "ip_country_code"
+                                },
+                                {
+                                    "label": "IP State Code/Region Code",
+                                    "value": "ip_state_code"
+                                },
+                                {
+                                    "label": "IP State/Region",
+                                    "value": "ip_state"
+                                },
+                                {
+                                    "label": "IP Timezone",
+                                    "value": "hs_ip_timezone"
+                                },
+                                {
+                                    "label": "Industry",
+                                    "value": "industry"
+                                },
+                                {
+                                    "label": "Invalid email address",
+                                    "value": "hs_email_bad_address"
+                                },
+                                {
+                                    "label": "Job Title",
+                                    "value": "jobtitle"
+                                },
+                                {
+                                    "label": "Job function",
+                                    "value": "job_function"
+                                },
+                                {
+                                    "label": "Journey Stage",
+                                    "value": "hs_journey_stage"
+                                },
+                                {
+                                    "label": "Klout Score",
+                                    "value": "kloutscoregeneral"
+                                },
+                                {
+                                    "label": "Last Activity Date",
+                                    "value": "notes_last_updated"
+                                },
+                                {
+                                    "label": "Last Contacted",
+                                    "value": "notes_last_contacted"
+                                },
+                                {
+                                    "label": "Last Engagement Date",
+                                    "value": "hs_last_sales_activity_timestamp"
+                                },
+                                {
+                                    "label": "Last Modified Date",
+                                    "value": "lastmodifieddate"
+                                },
+                                {
+                                    "label": "Last NPS survey comment",
+                                    "value": "hs_feedback_last_nps_follow_up"
+                                },
+                                {
+                                    "label": "Last NPS survey date",
+                                    "value": "hs_feedback_last_survey_date"
+                                },
+                                {
+                                    "label": "Last NPS survey rating",
+                                    "value": "hs_feedback_last_nps_rating"
+                                },
+                                {
+                                    "label": "Last Name",
+                                    "value": "lastname"
+                                },
+                                {
+                                    "label": "Last Page Seen",
+                                    "value": "hs_analytics_last_url"
+                                },
+                                {
+                                    "label": "Last Referring Site",
+                                    "value": "hs_analytics_last_referrer"
+                                },
+                                {
+                                    "label": "Last Touch Converting Campaign",
+                                    "value": "hs_analytics_last_touch_converting_campaign"
+                                },
+                                {
+                                    "label": "Last marketing email click date",
+                                    "value": "hs_email_last_click_date"
+                                },
+                                {
+                                    "label": "Last marketing email name",
+                                    "value": "hs_email_last_email_name"
+                                },
+                                {
+                                    "label": "Last marketing email open date",
+                                    "value": "hs_email_last_open_date"
+                                },
+                                {
+                                    "label": "Last marketing email reply date",
+                                    "value": "hs_email_last_reply_date"
+                                },
+                                {
+                                    "label": "Last marketing email send date",
+                                    "value": "hs_email_last_send_date"
+                                },
+                                {
+                                    "label": "Last sequence ended date",
+                                    "value": "hs_latest_sequence_ended_date"
+                                },
+                                {
+                                    "label": "Last sequence enrolled",
+                                    "value": "hs_latest_sequence_enrolled"
+                                },
+                                {
+                                    "label": "Last sequence enrolled date",
+                                    "value": "hs_latest_sequence_enrolled_date"
+                                },
+                                {
+                                    "label": "Latest Disqualified Lead Date",
+                                    "value": "hs_latest_disqualified_lead_date"
+                                },
+                                {
+                                    "label": "Latest Open Lead Date",
+                                    "value": "hs_latest_open_lead_date"
+                                },
+                                {
+                                    "label": "Latest Qualified Lead Date",
+                                    "value": "hs_latest_qualified_lead_date"
+                                },
+                                {
+                                    "label": "Latest Source",
+                                    "value": "hs_latest_source"
+                                },
+                                {
+                                    "label": "Latest Source Date",
+                                    "value": "hs_latest_source_timestamp"
+                                },
+                                {
+                                    "label": "Latest Source Drill-Down 1",
+                                    "value": "hs_latest_source_data_1"
+                                },
+                                {
+                                    "label": "Latest Source Drill-Down 2",
+                                    "value": "hs_latest_source_data_2"
+                                },
+                                {
+                                    "label": "Latest time in \"Customer (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_latest_time_in_customer"
+                                },
+                                {
+                                    "label": "Latest time in \"Evangelist (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_latest_time_in_evangelist"
+                                },
+                                {
+                                    "label": "Latest time in \"Lead (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_latest_time_in_lead"
+                                },
+                                {
+                                    "label": "Latest time in \"Marketing Qualified Lead (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_latest_time_in_marketingqualifiedlead"
+                                },
+                                {
+                                    "label": "Latest time in \"Opportunity (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_latest_time_in_opportunity"
+                                },
+                                {
+                                    "label": "Latest time in \"Other (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_latest_time_in_other"
+                                },
+                                {
+                                    "label": "Latest time in \"Sales Qualified Lead (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_latest_time_in_salesqualifiedlead"
+                                },
+                                {
+                                    "label": "Latest time in \"Subscriber (Lifecycle Stage Pipeline)\"",
+                                    "value": "hs_v2_latest_time_in_subscriber"
+                                },
+                                {
+                                    "label": "Lead Rating",
+                                    "value": "hs_predictivecontactscorebucket"
+                                },
+                                {
+                                    "label": "Lead Status",
+                                    "value": "hs_lead_status"
+                                },
+                                {
+                                    "label": "Lead response time",
+                                    "value": "hs_time_to_first_engagement"
+                                },
+                                {
+                                    "label": "Legal basis for processing contact's data",
+                                    "value": "hs_legal_basis"
+                                },
+                                {
+                                    "label": "Lifecycle Stage",
+                                    "value": "lifecyclestage"
+                                },
+                                {
+                                    "label": "Likelihood to close",
+                                    "value": "hs_predictivecontactscore_v2"
+                                },
+                                {
+                                    "label": "LinkedIn Bio",
+                                    "value": "linkedinbio"
+                                },
+                                {
+                                    "label": "LinkedIn Clicks",
+                                    "value": "hs_social_linkedin_clicks"
+                                },
+                                {
+                                    "label": "LinkedIn Connections",
+                                    "value": "linkedinconnections"
+                                },
+                                {
+                                    "label": "Linkedin account",
+                                    "value": "linkedin_account"
+                                },
+                                {
+                                    "label": "Marital Status",
+                                    "value": "marital_status"
+                                },
+                                {
+                                    "label": "Marketing contact status",
+                                    "value": "hs_marketable_status"
+                                },
+                                {
+                                    "label": "Marketing contact status source name",
+                                    "value": "hs_marketable_reason_id"
+                                },
+                                {
+                                    "label": "Marketing contact status source type",
+                                    "value": "hs_marketable_reason_type"
+                                },
+                                {
+                                    "label": "Marketing contact until next update",
+                                    "value": "hs_marketable_until_renewal"
+                                },
+                                {
+                                    "label": "Marketing email confirmation status",
+                                    "value": "hs_emailconfirmationstatus"
+                                },
+                                {
+                                    "label": "Marketing emails bounced",
+                                    "value": "hs_email_bounce"
+                                },
+                                {
+                                    "label": "Marketing emails clicked",
+                                    "value": "hs_email_click"
+                                },
+                                {
+                                    "label": "Marketing emails delivered",
+                                    "value": "hs_email_delivered"
+                                },
+                                {
+                                    "label": "Marketing emails opened",
+                                    "value": "hs_email_open"
+                                },
+                                {
+                                    "label": "Marketing emails replied",
+                                    "value": "hs_email_replied"
+                                },
+                                {
+                                    "label": "Medium of last booking in meetings tool",
+                                    "value": "engagements_last_meeting_booked_medium"
+                                },
+                                {
+                                    "label": "Member email",
+                                    "value": "hs_content_membership_email"
+                                },
+                                {
+                                    "label": "Membership Notes",
+                                    "value": "hs_content_membership_notes"
+                                },
+                                {
+                                    "label": "Merged Contact IDs",
+                                    "value": "hs_merged_object_ids"
+                                },
+                                {
+                                    "label": "Message",
+                                    "value": "message"
+                                },
+                                {
+                                    "label": "Military status",
+                                    "value": "military_status"
+                                },
+                                {
+                                    "label": "Mobile Phone Number",
+                                    "value": "mobilephone"
+                                },
+                                {
+                                    "label": "Most Recent Social Click",
+                                    "value": "hs_social_last_engagement"
+                                },
+                                {
+                                    "label": "Next Activity Date",
+                                    "value": "notes_next_activity_date"
+                                },
+                                {
+                                    "label": "Number of Associated Deals",
+                                    "value": "num_associated_deals"
+                                },
+                                {
+                                    "label": "Number of Employees",
+                                    "value": "numemployees"
+                                },
+                                {
+                                    "label": "Number of Form Submissions",
+                                    "value": "num_conversion_events"
+                                },
+                                {
+                                    "label": "Number of Pageviews",
+                                    "value": "hs_analytics_num_page_views"
+                                },
+                                {
+                                    "label": "Number of Sales Activities",
+                                    "value": "num_notes"
+                                },
+                                {
+                                    "label": "Number of Sessions",
+                                    "value": "hs_analytics_num_visits"
+                                },
+                                {
+                                    "label": "Number of Unique Forms Submitted",
+                                    "value": "num_unique_conversion_events"
+                                },
+                                {
+                                    "label": "Number of event completions",
+                                    "value": "hs_analytics_num_event_completions"
+                                },
+                                {
+                                    "label": "Number of sequences enrolled",
+                                    "value": "hs_sequences_enrolled_count"
+                                },
+                                {
+                                    "label": "Number of times contacted",
+                                    "value": "num_contacted_notes"
+                                },
+                                {
+                                    "label": "Opted out of email: Marketing Information",
+                                    "value": "hs_email_optout_359094912"
+                                },
+                                {
+                                    "label": "Opted out of email: One to One",
+                                    "value": "hs_email_optout_359094910"
+                                },
+                                {
+                                    "label": "Original Source",
+                                    "value": "hs_analytics_source"
+                                },
+                                {
+                                    "label": "Original Source Drill-Down 1",
+                                    "value": "hs_analytics_source_data_1"
+                                },
+                                {
+                                    "label": "Original Source Drill-Down 2",
+                                    "value": "hs_analytics_source_data_2"
+                                },
+                                {
+                                    "label": "Owner Assigned Date",
+                                    "value": "hubspot_owner_assigneddate"
+                                },
+                                {
+                                    "label": "Persona",
+                                    "value": "hs_persona"
+                                },
+                                {
+                                    "label": "Phone Number",
+                                    "value": "phone"
+                                },
+                                {
+                                    "label": "Postal Code",
+                                    "value": "zip"
+                                },
+                                {
+                                    "label": "Predictive Lead Score",
+                                    "value": "hs_predictivecontactscore"
+                                },
+                                {
+                                    "label": "Preferred language",
+                                    "value": "hs_language"
+                                },
+                                {
+                                    "label": "Quarantined Emails",
+                                    "value": "hs_quarantined_emails"
+                                },
+                                {
+                                    "label": "Recent Conversion",
+                                    "value": "recent_conversion_event_name"
+                                },
+                                {
+                                    "label": "Recent Conversion Date",
+                                    "value": "recent_conversion_date"
+                                },
+                                {
+                                    "label": "Recent Deal Amount",
+                                    "value": "recent_deal_amount"
+                                },
+                                {
+                                    "label": "Recent Deal Close Date",
+                                    "value": "recent_deal_close_date"
+                                },
+                                {
+                                    "label": "Recent Sales Email Clicked Date",
+                                    "value": "hs_sales_email_last_clicked"
+                                },
+                                {
+                                    "label": "Recent Sales Email Opened Date",
+                                    "value": "hs_sales_email_last_opened"
+                                },
+                                {
+                                    "label": "Recent Sales Email Replied Date",
+                                    "value": "hs_sales_email_last_replied"
+                                },
+                                {
+                                    "label": "Record ID",
+                                    "value": "hs_object_id"
+                                },
+                                {
+                                    "label": "Record Source",
+                                    "value": "hs_object_source_label"
+                                },
+                                {
+                                    "label": "Record Source Detail 1",
+                                    "value": "hs_object_source_detail_1"
+                                },
+                                {
+                                    "label": "Record Source Detail 2",
+                                    "value": "hs_object_source_detail_2"
+                                },
+                                {
+                                    "label": "Record Source Detail 3",
+                                    "value": "hs_object_source_detail_3"
+                                },
+                                {
+                                    "label": "Registered At",
+                                    "value": "hs_content_membership_registered_at"
+                                },
+                                {
+                                    "label": "Relationship Status",
+                                    "value": "relationship_status"
+                                },
+                                {
+                                    "label": "Salutation",
+                                    "value": "salutation"
+                                },
+                                {
+                                    "label": "School",
+                                    "value": "school"
+                                },
+                                {
+                                    "label": "Sends Since Last Engagement",
+                                    "value": "hs_email_sends_since_last_engagement"
+                                },
+                                {
+                                    "label": "Seniority",
+                                    "value": "seniority"
+                                },
+                                {
+                                    "label": "Source of last booking in meetings tool",
+                                    "value": "engagements_last_meeting_booked_source"
+                                },
+                                {
+                                    "label": "Start date",
+                                    "value": "start_date"
+                                },
+                                {
+                                    "label": "State/Region",
+                                    "value": "state"
+                                },
+                                {
+                                    "label": "Status",
+                                    "value": "hs_content_membership_status"
+                                },
+                                {
+                                    "label": "Street Address",
+                                    "value": "address"
+                                },
+                                {
+                                    "label": "Time First Seen",
+                                    "value": "hs_analytics_first_timestamp"
+                                },
+                                {
+                                    "label": "Time Last Seen",
+                                    "value": "hs_analytics_last_timestamp"
+                                },
+                                {
+                                    "label": "Time Zone",
+                                    "value": "hs_timezone"
+                                },
+                                {
+                                    "label": "Time between contact creation and deal close",
+                                    "value": "hs_time_between_contact_creation_and_deal_close"
+                                },
+                                {
+                                    "label": "Time between contact creation and deal creation",
+                                    "value": "hs_time_between_contact_creation_and_deal_creation"
+                                },
+                                {
+                                    "label": "Time enrolled in registration follow up emails",
+                                    "value": "hs_content_membership_follow_up_enqueued_at"
+                                },
+                                {
+                                    "label": "Time of First Session",
+                                    "value": "hs_analytics_first_visit_timestamp"
+                                },
+                                {
+                                    "label": "Time of Last Session",
+                                    "value": "hs_analytics_last_visit_timestamp"
+                                },
+                                {
+                                    "label": "Time registration email was sent",
+                                    "value": "hs_content_membership_registration_email_sent_at"
+                                },
+                                {
+                                    "label": "Time to move from lead to customer",
+                                    "value": "hs_time_to_move_from_lead_to_customer"
+                                },
+                                {
+                                    "label": "Time to move from marketing qualified lead to customer",
+                                    "value": "hs_time_to_move_from_marketingqualifiedlead_to_customer"
+                                },
+                                {
+                                    "label": "Time to move from opportunity to customer",
+                                    "value": "hs_time_to_move_from_opportunity_to_customer"
+                                },
+                                {
+                                    "label": "Time to move from sales qualified lead to customer",
+                                    "value": "hs_time_to_move_from_salesqualifiedlead_to_customer"
+                                },
+                                {
+                                    "label": "Time to move from subscriber to customer",
+                                    "value": "hs_time_to_move_from_subscriber_to_customer"
+                                },
+                                {
+                                    "label": "Total Revenue",
+                                    "value": "total_revenue"
+                                },
+                                {
+                                    "label": "Twitter Bio",
+                                    "value": "twitterbio"
+                                },
+                                {
+                                    "label": "Twitter Clicks",
+                                    "value": "hs_social_twitter_clicks"
+                                },
+                                {
+                                    "label": "Twitter Profile Photo",
+                                    "value": "twitterprofilephoto"
+                                },
+                                {
+                                    "label": "Twitter Username",
+                                    "value": "twitterhandle"
+                                },
+                                {
+                                    "label": "Type of first engagement",
+                                    "value": "hs_sa_first_engagement_object_type"
+                                },
+                                {
+                                    "label": "Unsubscribed from all email",
+                                    "value": "hs_email_optout"
+                                },
+                                {
+                                    "label": "Updated by user ID",
+                                    "value": "hs_updated_by_user_id"
+                                },
+                                {
+                                    "label": "Website URL",
+                                    "value": "website"
+                                },
+                                {
+                                    "label": "WhatsApp Phone Number",
+                                    "value": "hs_whatsapp_phone_number"
+                                },
+                                {
+                                    "label": "Work email",
+                                    "value": "work_email"
+                                }
+                            ],
+                            "operators": [
+                                {
+                                    "label": "Operators",
+                                    "options": [
+                                        {
+                                            "label": "Equal to",
+                                            "value": "EQ"
+                                        },
+                                        {
+                                            "label": "Not Equal to",
+                                            "value": "NEQ"
+                                        },
+                                        {
+                                            "label": "Less Than",
+                                            "value": "LT"
+                                        },
+                                        {
+                                            "label": "Less Than or Equal to",
+                                            "value": "LTE"
+                                        },
+                                        {
+                                            "label": "Greater Than",
+                                            "value": "GT"
+                                        },
+                                        {
+                                            "label": "Greater Than or Equal to",
+                                            "value": "GTE"
+                                        },
+                                        {
+                                            "label": "Contains Token",
+                                            "value": "CONTAINS_TOKEN"
+                                        },
+                                        {
+                                            "label": "Does Not Contain Token",
+                                            "value": "NOT_CONTAINS_TOKEN"
+                                        },
+                                        {
+                                            "label": "Has Property Value",
+                                            "value": "HAS_PROPERTY"
+                                        },
+                                        {
+                                            "label": "Does Not Have Property Value",
+                                            "value": "NOT_HAS_PROPERTY"
+                                        },
+                                        {
+                                            "label": "between (provide an array of 2 values)",
+                                            "value": "BETWEEN"
+                                        },
+                                        {
+                                            "label": "in (provide an array of values)",
+                                            "value": "IN"
+                                        },
+                                        {
+                                            "label": "not in (provide an array of values)",
+                                            "value": "NOT_IN"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "propertyName",
+                        "type": "select",
+                        "label": "Sort by Property Name"
+                    },
+                    {
+                        "name": "direction",
+                        "type": "select",
+                        "label": "Sorting Direction",
+                        "validate": {
+                            "enum": [
+                                "DESCENDING",
+                                "ASCENDING"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "type": "text",
+                        "label": "Paging Cursor"
+                    },
+                    {
+                        "name": "parseCustomFields",
+                        "type": "boolean",
+                        "label": "Parse Custom Fields",
+                        "required": true
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 10,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 2100,
+                    "y": 150
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 11,
+                            "module": "slack:CreateMessage",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 1676835
+                            },
+                            "filter": {
+                                "name": "if Exist in contact",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{9.id}}",
+                                            "o": "exist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "text": "{{9.properties.firstname}} {{9.properties.lastname}}\n{{8.phone_number}}\n{{8.address}}\n{{8.order_details.product}} {{8.order_details.quantity}}",
+                                "parse": false,
+                                "mrkdwn": true,
+                                "channel": "C074L78LGNS",
+                                "channelType": "public",
+                                "channelWType": "list"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2400,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "parse": {
+                                            "mode": "chose"
+                                        },
+                                        "mrkdwn": {
+                                            "mode": "chose"
+                                        },
+                                        "channel": {
+                                            "mode": "chose",
+                                            "label": "warehouse"
+                                        },
+                                        "link_names": {
+                                            "mode": "chose"
+                                        },
+                                        "channelType": {
+                                            "label": "Public channel"
+                                        },
+                                        "channelWType": {
+                                            "label": "Select from the list"
+                                        },
+                                        "unfurl_links": {
+                                            "mode": "chose"
+                                        },
+                                        "unfurl_media": {
+                                            "mode": "chose"
+                                        },
+                                        "reply_broadcast": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "slack3"
+                                            },
+                                            "label": "My Slack (bot) connection (a-bot)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:slack2,slack3",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "channelWType",
+                                        "type": "select",
+                                        "label": "Enter a channel ID or name",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "manualy",
+                                                "list"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    },
+                                    {
+                                        "name": "blocks",
+                                        "type": "text",
+                                        "label": "Blocks"
+                                    },
+                                    {
+                                        "name": "thread_ts",
+                                        "type": "text",
+                                        "label": "Thread message ID (time stamp)"
+                                    },
+                                    {
+                                        "name": "reply_broadcast",
+                                        "type": "boolean",
+                                        "label": "Reply broadcast"
+                                    },
+                                    {
+                                        "name": "link_names",
+                                        "type": "boolean",
+                                        "label": "Link names"
+                                    },
+                                    {
+                                        "name": "parse",
+                                        "type": "boolean",
+                                        "label": "Parse message text"
+                                    },
+                                    {
+                                        "name": "mrkdwn",
+                                        "type": "boolean",
+                                        "label": "Use markdown"
+                                    },
+                                    {
+                                        "name": "unfurl_links",
+                                        "type": "boolean",
+                                        "label": "Unfurl primarily text-based content"
+                                    },
+                                    {
+                                        "name": "unfurl_media",
+                                        "type": "boolean",
+                                        "label": "Unfurl media content"
+                                    },
+                                    {
+                                        "name": "icon_emoji",
+                                        "type": "text",
+                                        "label": "Icon emoji"
+                                    },
+                                    {
+                                        "name": "icon_url",
+                                        "type": "url",
+                                        "label": "Icon url"
+                                    },
+                                    {
+                                        "name": "username",
+                                        "type": "text",
+                                        "label": "User name"
+                                    },
+                                    {
+                                        "name": "channelType",
+                                        "type": "select",
+                                        "label": "Channel type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "public",
+                                                "private",
+                                                "im",
+                                                "mpim"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "channel",
+                                        "type": "select",
+                                        "label": "Public channel",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 13,
+                            "module": "hubspotcrm:createContact",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 1686318
+                            },
+                            "filter": {
+                                "name": "if not Exist in contact",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{9.id}}",
+                                            "o": "notexist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "_method": "compact",
+                                "properties": [
+                                    {
+                                        "key": "firstname",
+                                        "value": "{{8.customer_firstname}}"
+                                    },
+                                    {
+                                        "key": "lastname",
+                                        "value": "{{8.customer_lastname}}"
+                                    },
+                                    {
+                                        "key": "mobilephone",
+                                        "value": "{{8.phone_number}}"
+                                    }
+                                ],
+                                "parseCustomFields": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2400,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "_method": {
+                                            "mode": "chose",
+                                            "label": "Compact"
+                                        },
+                                        "properties": {
+                                            "mode": "chose",
+                                            "items": [
+                                                {
+                                                    "key": {
+                                                        "mode": "chose",
+                                                        "label": "First Name"
+                                                    }
+                                                },
+                                                {
+                                                    "key": {
+                                                        "mode": "chose",
+                                                        "label": "Last Name"
+                                                    }
+                                                },
+                                                {
+                                                    "key": {
+                                                        "mode": "chose",
+                                                        "label": "Mobile Phone Number"
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "parseCustomFields": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "hubspotcrm"
+                                            },
+                                            "label": "My HubSpot CRM connection (vincent.ramiso14@gmail.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:hubspotcrm",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "_method",
+                                        "type": "select",
+                                        "label": "View Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "compact",
+                                                "all"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "parseCustomFields",
+                                        "type": "boolean",
+                                        "label": "Parse Custom Fields",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "properties",
+                                        "spec": [
+                                            {
+                                                "name": "key",
+                                                "type": "select",
+                                                "label": "Key",
+                                                "dynamic": true,
+                                                "options": []
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "any",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Properties"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 14,
+                            "module": "slack:CreateMessage",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 1676835
+                            },
+                            "mapper": {
+                                "text": "{{8.customer_firstname}} {{8.customer_lastname}}\n{{8.phone_number}}\n{{8.address}}\n{{8.order_details.product}} {{8.order_details.quantity}}",
+                                "parse": false,
+                                "mrkdwn": true,
+                                "channel": "C074L78LGNS",
+                                "channelType": "public",
+                                "channelWType": "list"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2700,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "parse": {
+                                            "mode": "chose"
+                                        },
+                                        "mrkdwn": {
+                                            "mode": "chose"
+                                        },
+                                        "channel": {
+                                            "mode": "chose",
+                                            "label": "warehouse"
+                                        },
+                                        "link_names": {
+                                            "mode": "chose"
+                                        },
+                                        "channelType": {
+                                            "label": "Public channel"
+                                        },
+                                        "channelWType": {
+                                            "label": "Select from the list"
+                                        },
+                                        "unfurl_links": {
+                                            "mode": "chose"
+                                        },
+                                        "unfurl_media": {
+                                            "mode": "chose"
+                                        },
+                                        "reply_broadcast": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "slack3"
+                                            },
+                                            "label": "My Slack (bot) connection (a-bot)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:slack2,slack3",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "channelWType",
+                                        "type": "select",
+                                        "label": "Enter a channel ID or name",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "manualy",
+                                                "list"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    },
+                                    {
+                                        "name": "blocks",
+                                        "type": "text",
+                                        "label": "Blocks"
+                                    },
+                                    {
+                                        "name": "thread_ts",
+                                        "type": "text",
+                                        "label": "Thread message ID (time stamp)"
+                                    },
+                                    {
+                                        "name": "reply_broadcast",
+                                        "type": "boolean",
+                                        "label": "Reply broadcast"
+                                    },
+                                    {
+                                        "name": "link_names",
+                                        "type": "boolean",
+                                        "label": "Link names"
+                                    },
+                                    {
+                                        "name": "parse",
+                                        "type": "boolean",
+                                        "label": "Parse message text"
+                                    },
+                                    {
+                                        "name": "mrkdwn",
+                                        "type": "boolean",
+                                        "label": "Use markdown"
+                                    },
+                                    {
+                                        "name": "unfurl_links",
+                                        "type": "boolean",
+                                        "label": "Unfurl primarily text-based content"
+                                    },
+                                    {
+                                        "name": "unfurl_media",
+                                        "type": "boolean",
+                                        "label": "Unfurl media content"
+                                    },
+                                    {
+                                        "name": "icon_emoji",
+                                        "type": "text",
+                                        "label": "Icon emoji"
+                                    },
+                                    {
+                                        "name": "icon_url",
+                                        "type": "url",
+                                        "label": "Icon url"
+                                    },
+                                    {
+                                        "name": "username",
+                                        "type": "text",
+                                        "label": "User name"
+                                    },
+                                    {
+                                        "name": "channelType",
+                                        "type": "select",
+                                        "label": "Channel type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "public",
+                                                "private",
+                                                "im",
+                                                "mpim"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "channel",
+                                        "type": "select",
+                                        "label": "Public channel",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com"
+    }
+}
