@@ -1,0 +1,1359 @@
+{
+    "name": "automate client onboarding process",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 588033,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 300
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "data": {
+                                "editable": "true"
+                            },
+                            "label": "slack-command"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "token",
+                        "type": "text"
+                    },
+                    {
+                        "name": "team_id",
+                        "type": "text"
+                    },
+                    {
+                        "name": "team_domain",
+                        "type": "text"
+                    },
+                    {
+                        "name": "channel_id",
+                        "type": "text"
+                    },
+                    {
+                        "name": "channel_name",
+                        "type": "text"
+                    },
+                    {
+                        "name": "user_id",
+                        "type": "text"
+                    },
+                    {
+                        "name": "user_name",
+                        "type": "text"
+                    },
+                    {
+                        "name": "command",
+                        "type": "text"
+                    },
+                    {
+                        "name": "text",
+                        "type": "text"
+                    },
+                    {
+                        "name": "api_app_id",
+                        "type": "text"
+                    },
+                    {
+                        "name": "is_enterprise_install",
+                        "type": "text"
+                    },
+                    {
+                        "name": "response_url",
+                        "type": "text"
+                    },
+                    {
+                        "name": "trigger_id",
+                        "type": "text"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 11,
+            "module": "regexp:Parser",
+            "version": 1,
+            "parameters": {
+                "global": false,
+                "pattern": "\\[(?<name>[^\\]]+)\\]\\s+\\[(?<email>[^\\]]+)\\]",
+                "multiline": false,
+                "sensitive": true,
+                "singleline": false,
+                "continueWhenNoRes": false
+            },
+            "mapper": {
+                "text": "{{1.text}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 300
+                },
+                "restore": {},
+                "parameters": [
+                    {
+                        "name": "pattern",
+                        "type": "text",
+                        "label": "Pattern",
+                        "required": true
+                    },
+                    {
+                        "name": "global",
+                        "type": "boolean",
+                        "label": "Global match",
+                        "required": true
+                    },
+                    {
+                        "name": "sensitive",
+                        "type": "boolean",
+                        "label": "Case sensitive",
+                        "required": true
+                    },
+                    {
+                        "name": "multiline",
+                        "type": "boolean",
+                        "label": "Multiline",
+                        "required": true
+                    },
+                    {
+                        "name": "singleline",
+                        "type": "boolean",
+                        "label": "Singleline",
+                        "required": true
+                    },
+                    {
+                        "name": "continueWhenNoRes",
+                        "type": "boolean",
+                        "label": "Continue the execution of the route even if the module finds no matches",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "text",
+                        "type": "text",
+                        "label": "Text"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "name"
+                    },
+                    {
+                        "name": "email",
+                        "type": "text",
+                        "label": "email"
+                    }
+                ]
+            },
+            "onerror": [
+                {
+                    "id": 22,
+                    "module": "slack:CreateMessage",
+                    "version": 4,
+                    "parameters": {
+                        "__IMTCONN__": 1676835
+                    },
+                    "mapper": {
+                        "text": "{{11.error.type}}\n{{11.error.message}}",
+                        "parse": false,
+                        "mrkdwn": true,
+                        "channel": "C074EPVBG4U",
+                        "channelType": "public",
+                        "channelWType": "list"
+                    },
+                    "metadata": {
+                        "designer": {
+                            "x": 600,
+                            "y": 600
+                        },
+                        "restore": {
+                            "expect": {
+                                "parse": {
+                                    "mode": "chose"
+                                },
+                                "mrkdwn": {
+                                    "mode": "chose"
+                                },
+                                "channel": {
+                                    "mode": "chose",
+                                    "label": "bot-handle-error"
+                                },
+                                "link_names": {
+                                    "mode": "chose"
+                                },
+                                "channelType": {
+                                    "label": "Public channel"
+                                },
+                                "channelWType": {
+                                    "label": "Select from the list"
+                                },
+                                "unfurl_links": {
+                                    "mode": "chose"
+                                },
+                                "unfurl_media": {
+                                    "mode": "chose"
+                                },
+                                "reply_broadcast": {
+                                    "mode": "chose"
+                                }
+                            },
+                            "parameters": {
+                                "__IMTCONN__": {
+                                    "data": {
+                                        "scoped": "true",
+                                        "connection": "slack3"
+                                    },
+                                    "label": "My Slack (bot) connection (integromat)"
+                                }
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "__IMTCONN__",
+                                "type": "account:slack2,slack3",
+                                "label": "Connection",
+                                "required": true
+                            }
+                        ],
+                        "expect": [
+                            {
+                                "name": "channelWType",
+                                "type": "select",
+                                "label": "Enter a channel ID or name",
+                                "required": true,
+                                "validate": {
+                                    "enum": [
+                                        "manualy",
+                                        "list"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "text",
+                                "type": "text",
+                                "label": "Text"
+                            },
+                            {
+                                "name": "blocks",
+                                "type": "text",
+                                "label": "Blocks"
+                            },
+                            {
+                                "name": "thread_ts",
+                                "type": "text",
+                                "label": "Thread message ID (time stamp)"
+                            },
+                            {
+                                "name": "reply_broadcast",
+                                "type": "boolean",
+                                "label": "Reply broadcast"
+                            },
+                            {
+                                "name": "link_names",
+                                "type": "boolean",
+                                "label": "Link names"
+                            },
+                            {
+                                "name": "parse",
+                                "type": "boolean",
+                                "label": "Parse message text"
+                            },
+                            {
+                                "name": "mrkdwn",
+                                "type": "boolean",
+                                "label": "Use markdown"
+                            },
+                            {
+                                "name": "unfurl_links",
+                                "type": "boolean",
+                                "label": "Unfurl primarily text-based content"
+                            },
+                            {
+                                "name": "unfurl_media",
+                                "type": "boolean",
+                                "label": "Unfurl media content"
+                            },
+                            {
+                                "name": "icon_emoji",
+                                "type": "text",
+                                "label": "Icon emoji"
+                            },
+                            {
+                                "name": "icon_url",
+                                "type": "url",
+                                "label": "Icon url"
+                            },
+                            {
+                                "name": "username",
+                                "type": "text",
+                                "label": "User name"
+                            },
+                            {
+                                "name": "channelType",
+                                "type": "select",
+                                "label": "Channel type",
+                                "required": true,
+                                "validate": {
+                                    "enum": [
+                                        "public",
+                                        "private",
+                                        "im",
+                                        "mpim"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "channel",
+                                "type": "select",
+                                "label": "Public channel",
+                                "required": true
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "id": 12,
+            "module": "util:SetVariable2",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "name": "name",
+                "scope": "roundtrip",
+                "value": "{{11.name}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Variable name",
+                        "required": true
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "value",
+                        "type": "any",
+                        "label": "Variable value"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "name",
+                        "type": "any",
+                        "label": "name"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 13,
+            "module": "util:SetVariable2",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "name": "email",
+                "scope": "roundtrip",
+                "value": "{{11.email}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Variable name",
+                        "required": true
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "value",
+                        "type": "any",
+                        "label": "Variable value"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "email",
+                        "type": "any",
+                        "label": "email"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 14,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 150
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 15,
+                            "module": "google-drive:createAFolder",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 1662578
+                            },
+                            "mapper": {
+                                "name": "{{12.name}}",
+                                "shared": false,
+                                "folderId": "/1qeukg6kCjy9paMd3nfi63BViEA7GBHxt",
+                                "destination": "drive"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1500,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "folderId": {
+                                            "mode": "chose",
+                                            "path": [
+                                                "onboarding-client"
+                                            ]
+                                        },
+                                        "destination": {
+                                            "label": "My Drive"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-restricted"
+                                            },
+                                            "label": "Test send email (vincent@prellus.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google-restricted",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "destination",
+                                        "type": "select",
+                                        "label": "New Drive Location",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "drive",
+                                                "share",
+                                                "team"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "folderId",
+                                        "type": "folder",
+                                        "label": "New Folder Location",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "New Folder's Name"
+                                    },
+                                    {
+                                        "name": "shared",
+                                        "type": "boolean",
+                                        "label": "Share Folder",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 17,
+                            "module": "google-drive:searchForFilesFolders",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 1662578
+                            },
+                            "mapper": {
+                                "limit": "10",
+                                "select": "list",
+                                "folderId": "/1YN8lNe94RMj34Qec9cWkq538eC-g8iLi",
+                                "retrieve": "file",
+                                "destination": "drive"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1800,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "select": {
+                                            "label": "Select from the list"
+                                        },
+                                        "folderId": {
+                                            "mode": "chose",
+                                            "path": [
+                                                "necessary_on_boarding_documents"
+                                            ]
+                                        },
+                                        "retrieve": {
+                                            "label": "Files"
+                                        },
+                                        "searchType": {
+                                            "label": "Empty"
+                                        },
+                                        "destination": {
+                                            "label": "My Drive"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-restricted"
+                                            },
+                                            "label": "Test send email (vincent@prellus.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google-restricted",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "select",
+                                        "type": "select",
+                                        "label": "Select the Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "map",
+                                                "list"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "retrieve",
+                                        "type": "select",
+                                        "label": "Retrieve",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "file",
+                                                "folder",
+                                                "file_folder"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "searchType",
+                                        "type": "select",
+                                        "label": "Search",
+                                        "validate": {
+                                            "enum": [
+                                                "title",
+                                                "fulltext",
+                                                "custom"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "limit",
+                                        "type": "uinteger",
+                                        "label": "Limit"
+                                    },
+                                    {
+                                        "name": "destination",
+                                        "type": "select",
+                                        "label": "Choose a Drive",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "drive",
+                                                "share",
+                                                "team"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "folderId",
+                                        "type": "folder",
+                                        "label": "Choose a Folder"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 19,
+                            "module": "google-drive:getAFile",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 1662578
+                            },
+                            "mapper": {
+                                "file": "{{17.id}}",
+                                "select": "map",
+                                "formatDrawings": "image/jpeg",
+                                "formatDocuments": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                "formatSpreadsheets": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                "formatPresentations": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2100,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "select": {
+                                            "label": "Enter manually"
+                                        },
+                                        "formatDrawings": {
+                                            "label": "JPEG"
+                                        },
+                                        "formatDocuments": {
+                                            "label": "MS Word Document"
+                                        },
+                                        "formatSpreadsheets": {
+                                            "label": "MS Excel"
+                                        },
+                                        "formatPresentations": {
+                                            "label": "MS PowerPoint"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-restricted"
+                                            },
+                                            "label": "Test send email (vincent@prellus.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google-restricted",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "select",
+                                        "type": "select",
+                                        "label": "Enter a File ID",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "map",
+                                                "value"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "formatDocuments",
+                                        "type": "select",
+                                        "label": "Convert Google Documents Files to Format",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                                "application/pdf",
+                                                "application/vnd.oasis.opendocument.text",
+                                                "text/html",
+                                                "text/plain",
+                                                "application/rtf"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "formatSpreadsheets",
+                                        "type": "select",
+                                        "label": "Convert Google Spreadsheets Files to Format",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                                "application/x-vnd.oasis.opendocument.spreadsheet",
+                                                "application/pdf"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "formatPresentations",
+                                        "type": "select",
+                                        "label": "Convert Google Slides Files to Format",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                                                "application/pdf"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "formatDrawings",
+                                        "type": "select",
+                                        "label": "Convert Google Drawings Files to Format",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "image/jpeg",
+                                                "image/png",
+                                                "image/svg+xml",
+                                                "application/pdf"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "file",
+                                        "type": "text",
+                                        "label": "File ID",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 42,
+                            "module": "builtin:BasicAggregator",
+                            "version": 1,
+                            "parameters": {
+                                "feeder": 17,
+                                "target": "20.attachments"
+                            },
+                            "mapper": {
+                                "cid": "",
+                                "data": "{{19.data}}",
+                                "fileName": "{{19.name}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2400,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "extra": {
+                                        "feeder": {
+                                            "label": "Google Drive - Search for Files/Folders [17]"
+                                        },
+                                        "target": {
+                                            "label": "Attachments"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "fileName",
+                                        "type": "filename",
+                                        "label": "File name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "data",
+                                        "type": "buffer",
+                                        "label": "Data",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "cid",
+                                        "type": "text",
+                                        "label": "Content-ID"
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        },
+                        {
+                            "id": 20,
+                            "module": "google-email:ActionSendEmail",
+                            "version": 2,
+                            "parameters": {
+                                "account": 1662578
+                            },
+                            "mapper": {
+                                "cc": [],
+                                "to": [
+                                    "{{13.email}}"
+                                ],
+                                "bcc": [],
+                                "from": "",
+                                "html": "dear {{12.name}}, <br>\nthese are the necessary files on your onboarding process",
+                                "subject": "Onboarding Files",
+                                "attachments": "{{42.array}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2729,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "cc": {
+                                            "mode": "chose"
+                                        },
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bcc": {
+                                            "mode": "chose"
+                                        },
+                                        "attachments": {
+                                            "mode": "edit"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "account": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-restricted"
+                                            },
+                                            "label": "Test send email (vincent@prellus.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "account",
+                                        "type": "account:google-restricted",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "help": "Here you can input a custom sender email address. If your email account does not have permission to send emails from a different address, you will receive an error. To use a custom sender name, input the name in quotes before either the custom sender email address or the email address you used to establish the connection. E.g. `test@mail.com` or `\"John Bush\" test@email.com`",
+                                        "name": "from",
+                                        "type": "text",
+                                        "label": "From",
+                                        "advanced": true
+                                    },
+                                    {
+                                        "help": "Enter a recipient email address.",
+                                        "name": "to",
+                                        "spec": {
+                                            "name": " ",
+                                            "type": "email",
+                                            "label": "Email address",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "To",
+                                        "labels": {
+                                            "add": "Add a recipient",
+                                            "edit": "Edit a recipient"
+                                        },
+                                        "editable": true,
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject",
+                                        "required": false
+                                    },
+                                    {
+                                        "help": "You can use HTML tags.",
+                                        "name": "html",
+                                        "type": "text",
+                                        "label": "Content",
+                                        "required": false
+                                    },
+                                    {
+                                        "name": "attachments",
+                                        "spec": [
+                                            {
+                                                "help": "Enter a file name, including the ending, e.g. img.jpeg.",
+                                                "name": "fileName",
+                                                "type": "filename",
+                                                "label": "File name",
+                                                "required": true,
+                                                "semantic": "file:name"
+                                            },
+                                            {
+                                                "help": "Binary or text data to be uploaded to a selected folder. [More information about working with files](kb://mapping/working-with-files.html).",
+                                                "name": "data",
+                                                "type": "buffer",
+                                                "label": "Data",
+                                                "required": true,
+                                                "semantic": "file:data"
+                                            },
+                                            {
+                                                "help": "Inserts images into content",
+                                                "name": "cid",
+                                                "type": "text",
+                                                "label": "Content-ID",
+                                                "required": false
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Attachments",
+                                        "labels": {
+                                            "add": "Add an attachment",
+                                            "edit": "Edit an attachment"
+                                        },
+                                        "editable": true,
+                                        "required": false
+                                    },
+                                    {
+                                        "name": "cc",
+                                        "spec": {
+                                            "type": "email",
+                                            "label": "Email address",
+                                            "required": false
+                                        },
+                                        "type": "array",
+                                        "label": "Copy recipient",
+                                        "labels": {
+                                            "add": "Add a copy recipient",
+                                            "edit": "Edit a copy recipient"
+                                        },
+                                        "advanced": true,
+                                        "editable": true,
+                                        "required": false
+                                    },
+                                    {
+                                        "name": "bcc",
+                                        "spec": {
+                                            "type": "email",
+                                            "label": "Email address",
+                                            "required": false
+                                        },
+                                        "type": "array",
+                                        "label": "Blind copy recipient",
+                                        "labels": {
+                                            "add": "Add a blind copy recipient",
+                                            "edit": "Edit a blind copy recipient"
+                                        },
+                                        "advanced": true,
+                                        "editable": true,
+                                        "required": false
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 23,
+                            "module": "slack:CreateMessage",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 1676835
+                            },
+                            "mapper": {
+                                "text": "New Onboard Client!\nname - {{12.name}}\nemail - {{13.email}}",
+                                "parse": false,
+                                "mrkdwn": true,
+                                "channel": "C074X0Q8QVC",
+                                "channelType": "public",
+                                "channelWType": "list"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1500,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "parse": {
+                                            "mode": "chose"
+                                        },
+                                        "mrkdwn": {
+                                            "mode": "chose"
+                                        },
+                                        "channel": {
+                                            "mode": "chose",
+                                            "label": "bookkeeper"
+                                        },
+                                        "link_names": {
+                                            "mode": "chose"
+                                        },
+                                        "channelType": {
+                                            "label": "Public channel"
+                                        },
+                                        "channelWType": {
+                                            "label": "Select from the list"
+                                        },
+                                        "unfurl_links": {
+                                            "mode": "chose"
+                                        },
+                                        "unfurl_media": {
+                                            "mode": "chose"
+                                        },
+                                        "reply_broadcast": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "slack3"
+                                            },
+                                            "label": "My Slack (bot) connection (integromat)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:slack2,slack3",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "channelWType",
+                                        "type": "select",
+                                        "label": "Enter a channel ID or name",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "manualy",
+                                                "list"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    },
+                                    {
+                                        "name": "blocks",
+                                        "type": "text",
+                                        "label": "Blocks"
+                                    },
+                                    {
+                                        "name": "thread_ts",
+                                        "type": "text",
+                                        "label": "Thread message ID (time stamp)"
+                                    },
+                                    {
+                                        "name": "reply_broadcast",
+                                        "type": "boolean",
+                                        "label": "Reply broadcast"
+                                    },
+                                    {
+                                        "name": "link_names",
+                                        "type": "boolean",
+                                        "label": "Link names"
+                                    },
+                                    {
+                                        "name": "parse",
+                                        "type": "boolean",
+                                        "label": "Parse message text"
+                                    },
+                                    {
+                                        "name": "mrkdwn",
+                                        "type": "boolean",
+                                        "label": "Use markdown"
+                                    },
+                                    {
+                                        "name": "unfurl_links",
+                                        "type": "boolean",
+                                        "label": "Unfurl primarily text-based content"
+                                    },
+                                    {
+                                        "name": "unfurl_media",
+                                        "type": "boolean",
+                                        "label": "Unfurl media content"
+                                    },
+                                    {
+                                        "name": "icon_emoji",
+                                        "type": "text",
+                                        "label": "Icon emoji"
+                                    },
+                                    {
+                                        "name": "icon_url",
+                                        "type": "url",
+                                        "label": "Icon url"
+                                    },
+                                    {
+                                        "name": "username",
+                                        "type": "text",
+                                        "label": "User name"
+                                    },
+                                    {
+                                        "name": "channelType",
+                                        "type": "select",
+                                        "label": "Channel type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "public",
+                                                "private",
+                                                "im",
+                                                "mpim"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "channel",
+                                        "type": "select",
+                                        "label": "Public channel",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 38,
+                            "module": "google-email:ActionSendEmail",
+                            "version": 2,
+                            "parameters": {
+                                "account": 1662578
+                            },
+                            "mapper": {
+                                "cc": [],
+                                "to": [
+                                    "{{13.email}}"
+                                ],
+                                "bcc": [],
+                                "from": "",
+                                "html": "schedule your meeting here: https://calendly.com/vincent-9epg/test?name={{replace(12.name; space; \"+\")}}&email={{13.email}}",
+                                "subject": "schedule a meeting",
+                                "attachments": []
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1850,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "cc": {
+                                            "mode": "chose"
+                                        },
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bcc": {
+                                            "mode": "chose"
+                                        },
+                                        "attachments": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "account": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-restricted"
+                                            },
+                                            "label": "Test send email (vincent@prellus.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "account",
+                                        "type": "account:google-restricted",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "from",
+                                        "type": "text",
+                                        "label": "From"
+                                    },
+                                    {
+                                        "name": "to",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "To",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject"
+                                    },
+                                    {
+                                        "name": "html",
+                                        "type": "text",
+                                        "label": "Content"
+                                    },
+                                    {
+                                        "name": "attachments",
+                                        "spec": [
+                                            {
+                                                "name": "fileName",
+                                                "type": "filename",
+                                                "label": "File name",
+                                                "required": true,
+                                                "semantic": "file:name"
+                                            },
+                                            {
+                                                "name": "data",
+                                                "type": "buffer",
+                                                "label": "Data",
+                                                "required": true,
+                                                "semantic": "file:data"
+                                            },
+                                            {
+                                                "name": "cid",
+                                                "type": "text",
+                                                "label": "Content-ID"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Attachments"
+                                    },
+                                    {
+                                        "name": "cc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address"
+                                        },
+                                        "type": "array",
+                                        "label": "Copy recipient"
+                                    },
+                                    {
+                                        "name": "bcc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address"
+                                        },
+                                        "type": "array",
+                                        "label": "Blind copy recipient"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com"
+    }
+}

@@ -1,0 +1,1470 @@
+{
+    "name": "RSS feed to Twitter or other social",
+    "flow": [
+        {
+            "id": 12,
+            "module": "datastore:SearchRecord",
+            "version": 1,
+            "parameters": {
+                "limit": null,
+                "datastore": 16197,
+                "continueWhenNoRes": false
+            },
+            "mapper": {
+                "sort": [],
+                "filter": [
+                    [
+                        {
+                            "a": "URL",
+                            "o": "exist"
+                        }
+                    ]
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 300
+                },
+                "restore": {
+                    "parameters": {
+                        "datastore": {
+                            "label": "My data store"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "datastore",
+                        "type": "datastore",
+                        "label": "Data store",
+                        "required": true
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit"
+                    },
+                    {
+                        "name": "continueWhenNoRes",
+                        "type": "boolean",
+                        "label": "Continue the execution of the route even if the module returns no results"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "filter",
+                        "type": "filter",
+                        "label": "Filter",
+                        "options": "rpc://datastore/1.10.2/RpcGetUDTKeys",
+                        "required": true
+                    },
+                    {
+                        "name": "sort",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "select",
+                                "label": "Key",
+                                "dynamic": true,
+                                "options": [],
+                                "required": true
+                            },
+                            {
+                                "name": "order",
+                                "type": "select",
+                                "label": "Order",
+                                "options": [
+                                    {
+                                        "label": "Ascending",
+                                        "value": 1
+                                    },
+                                    {
+                                        "label": "Descending",
+                                        "value": -1
+                                    }
+                                ],
+                                "required": true
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Sort"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "__IMTLENGTH__",
+                        "type": "uinteger",
+                        "label": "Total number of bundles"
+                    },
+                    {
+                        "name": "__IMTINDEX__",
+                        "type": "uinteger",
+                        "label": "Bundle order position"
+                    },
+                    {
+                        "name": "key",
+                        "type": "text",
+                        "label": "Key"
+                    },
+                    {
+                        "name": "data",
+                        "spec": [
+                            {
+                                "name": "URL",
+                                "type": "text",
+                                "label": null,
+                                "default": null,
+                                "required": false,
+                                "multiline": false
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Record"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 13,
+            "module": "builtin:BasicAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 12
+            },
+            "mapper": {
+                "data": "{{12.data}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 300
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "Data store - Search records [12]"
+                        },
+                        "target": {
+                            "label": "Custom"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "id": 14,
+            "module": "builtin:BasicFeeder",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "array": "{{13.array}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 300
+                },
+                "restore": {
+                    "expect": {
+                        "array": {
+                            "mode": "edit"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "mode": "edit",
+                        "name": "array",
+                        "spec": [],
+                        "type": "array",
+                        "label": "Array",
+                        "editable": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 17,
+            "module": "rss:ActionReadArticles",
+            "version": 4,
+            "parameters": {
+                "include": []
+            },
+            "mapper": {
+                "url": "{{14.data.URL}}",
+                "gzip": true,
+                "password": "",
+                "username": "",
+                "maxResults": "10",
+                "filterDateTo": "05/22/2024 11:12 AM",
+                "filterDateFrom": "05/01/2024 12:38 PM"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 300
+                },
+                "restore": {},
+                "parameters": [
+                    {
+                        "name": "include",
+                        "type": "select",
+                        "label": "Process RSS fields",
+                        "multiple": true,
+                        "validate": {
+                            "enum": [
+                                "google-merchant-center",
+                                "itunes"
+                            ]
+                        }
+                    }
+                ],
+                "expect": [
+                    {
+                        "help": "Enter a URL that points to a valid RSS or Atom export.",
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "help": "Only for password-protected export.",
+                        "name": "username",
+                        "type": "text",
+                        "label": "User name",
+                        "advanced": true,
+                        "required": false
+                    },
+                    {
+                        "help": "Only for password-protected export.",
+                        "name": "password",
+                        "type": "text",
+                        "label": "Password",
+                        "advanced": true,
+                        "required": false
+                    },
+                    {
+                        "help": "Enter a date in the 'date from' field from which you want to filter RSS feed items. Make will process all items that are more recent than the specified date.",
+                        "name": "filterDateFrom",
+                        "type": "date",
+                        "label": "Date from"
+                    },
+                    {
+                        "help": "Enter a date in the 'date to' field from which you want to filter RSS feed items. Make will process all items dated on or before the specified date.",
+                        "name": "filterDateTo",
+                        "type": "date",
+                        "label": "Date to "
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of returned items",
+                        "required": true
+                    },
+                    {
+                        "help": "Adds an `Accept-Encoding` header to request compressed content.",
+                        "name": "gzip",
+                        "type": "boolean",
+                        "label": "Request compressed content",
+                        "default": true,
+                        "advanced": true,
+                        "required": true
+                    }
+                ]
+            },
+            "onerror": [
+                {
+                    "id": 18,
+                    "module": "slack:CreateMessage",
+                    "version": 4,
+                    "parameters": {
+                        "__IMTCONN__": 1676835
+                    },
+                    "mapper": {
+                        "text": "{{17.error.message}}",
+                        "parse": false,
+                        "mrkdwn": true,
+                        "channel": "C074EPVBG4U",
+                        "channelType": "public",
+                        "channelWType": "list"
+                    },
+                    "metadata": {
+                        "designer": {
+                            "x": 1200,
+                            "y": 600
+                        },
+                        "restore": {
+                            "expect": {
+                                "parse": {
+                                    "mode": "chose"
+                                },
+                                "mrkdwn": {
+                                    "mode": "chose"
+                                },
+                                "channel": {
+                                    "mode": "chose",
+                                    "label": "bot-handle-error"
+                                },
+                                "link_names": {
+                                    "mode": "chose"
+                                },
+                                "channelType": {
+                                    "label": "Public channel"
+                                },
+                                "channelWType": {
+                                    "label": "Select from the list"
+                                },
+                                "unfurl_links": {
+                                    "mode": "chose"
+                                },
+                                "unfurl_media": {
+                                    "mode": "chose"
+                                },
+                                "reply_broadcast": {
+                                    "mode": "chose"
+                                }
+                            },
+                            "parameters": {
+                                "__IMTCONN__": {
+                                    "data": {
+                                        "scoped": "true",
+                                        "connection": "slack3"
+                                    },
+                                    "label": "My Slack (bot) connection (integromat)"
+                                }
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "__IMTCONN__",
+                                "type": "account:slack2,slack3",
+                                "label": "Connection",
+                                "required": true
+                            }
+                        ],
+                        "expect": [
+                            {
+                                "name": "channelWType",
+                                "type": "select",
+                                "label": "Enter a channel ID or name",
+                                "required": true,
+                                "validate": {
+                                    "enum": [
+                                        "manualy",
+                                        "list"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "text",
+                                "type": "text",
+                                "label": "Text"
+                            },
+                            {
+                                "name": "blocks",
+                                "type": "text",
+                                "label": "Blocks"
+                            },
+                            {
+                                "name": "thread_ts",
+                                "type": "text",
+                                "label": "Thread message ID (time stamp)"
+                            },
+                            {
+                                "name": "reply_broadcast",
+                                "type": "boolean",
+                                "label": "Reply broadcast"
+                            },
+                            {
+                                "name": "link_names",
+                                "type": "boolean",
+                                "label": "Link names"
+                            },
+                            {
+                                "name": "parse",
+                                "type": "boolean",
+                                "label": "Parse message text"
+                            },
+                            {
+                                "name": "mrkdwn",
+                                "type": "boolean",
+                                "label": "Use markdown"
+                            },
+                            {
+                                "name": "unfurl_links",
+                                "type": "boolean",
+                                "label": "Unfurl primarily text-based content"
+                            },
+                            {
+                                "name": "unfurl_media",
+                                "type": "boolean",
+                                "label": "Unfurl media content"
+                            },
+                            {
+                                "name": "icon_emoji",
+                                "type": "text",
+                                "label": "Icon emoji"
+                            },
+                            {
+                                "name": "icon_url",
+                                "type": "url",
+                                "label": "Icon url"
+                            },
+                            {
+                                "name": "username",
+                                "type": "text",
+                                "label": "User name"
+                            },
+                            {
+                                "name": "channelType",
+                                "type": "select",
+                                "label": "Channel type",
+                                "required": true,
+                                "validate": {
+                                    "enum": [
+                                        "public",
+                                        "private",
+                                        "im",
+                                        "mpim"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "channel",
+                                "type": "select",
+                                "label": "Public channel",
+                                "required": true
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "id": 19,
+            "module": "openai-gpt-3:CreateCompletion",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1667283
+            },
+            "mapper": {
+                "model": "gpt-4",
+                "top_p": "1",
+                "select": "chat",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "Article: {{17.rssFields.title}}\n{{17.rssFields.description}}\n{{17.rssFields.link}}\n\nInstructions: Begin with an engaging question or statement about the topic of the article.Summarize 2-3 key points from the article in a way that sparks curiosity.Include a call-to-action, prompting users to read the full article.Add 2-3 relevant hashtags to increase visibility.Ensure the tweet does not exceed 200 characters, including the Url."
+                    }
+                ],
+                "max_tokens": "2048",
+                "temperature": "1",
+                "n_completions": "1",
+                "response_format": "text"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "stop": {
+                            "mode": "chose"
+                        },
+                        "model": {
+                            "mode": "chose",
+                            "label": "gpt-4"
+                        },
+                        "select": {
+                            "label": "Create a Chat Completion (GPT Models)"
+                        },
+                        "messages": {
+                            "mode": "chose",
+                            "items": [
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "System"
+                                    }
+                                }
+                            ]
+                        },
+                        "logit_bias": {
+                            "mode": "chose"
+                        },
+                        "response_format": {
+                            "mode": "chose",
+                            "label": "Text"
+                        },
+                        "additionalParameters": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            },
+                            "label": "Open Ai Paul"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Select Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "chat",
+                                "prompt"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "max_tokens",
+                        "type": "number",
+                        "label": "Max Tokens",
+                        "required": true
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                            "max": 2,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "top_p",
+                        "type": "number",
+                        "label": "Top P",
+                        "validate": {
+                            "max": 1,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "n_completions",
+                        "type": "number",
+                        "label": "Number"
+                    },
+                    {
+                        "name": "frequency_penalty",
+                        "type": "number",
+                        "label": "Frequency Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "presence_penalty",
+                        "type": "number",
+                        "label": "Presence Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "logit_bias",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "token",
+                                    "type": "text",
+                                    "label": "Token ID",
+                                    "required": true
+                                },
+                                {
+                                    "name": "probability",
+                                    "type": "number",
+                                    "label": "Probability",
+                                    "required": true,
+                                    "validate": {
+                                        "max": 100,
+                                        "min": -100
+                                    }
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Token Probability"
+                        },
+                        "type": "array",
+                        "label": "Token Probability"
+                    },
+                    {
+                        "name": "response_format",
+                        "type": "select",
+                        "label": "Response Format",
+                        "validate": {
+                            "enum": [
+                                "text",
+                                "json_object"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "seed",
+                        "type": "integer",
+                        "label": "Seed"
+                    },
+                    {
+                        "name": "stop",
+                        "spec": {
+                            "name": "value",
+                            "type": "text",
+                            "label": "Stop Sequence"
+                        },
+                        "type": "array",
+                        "label": "Stop Sequences",
+                        "validate": {
+                            "maxItems": 4
+                        }
+                    },
+                    {
+                        "name": "additionalParameters",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "key",
+                                    "type": "text",
+                                    "label": "Parameter Name",
+                                    "required": true
+                                },
+                                {
+                                    "name": "type",
+                                    "type": "select",
+                                    "label": "Input Type",
+                                    "options": [
+                                        {
+                                            "label": "Text",
+                                            "value": "text",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ],
+                                            "default": true
+                                        },
+                                        {
+                                            "label": "Number",
+                                            "value": "number",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "number",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Boolean",
+                                            "value": "boolean",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "boolean",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Date",
+                                            "value": "date",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "date",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Any",
+                                            "value": "any",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "any",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Input Parameter"
+                        },
+                        "type": "array",
+                        "label": "Other Input Parameters"
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    },
+                    {
+                        "name": "messages",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "role",
+                                    "type": "select",
+                                    "label": "Role",
+                                    "options": [
+                                        {
+                                            "label": "System",
+                                            "value": "system"
+                                        },
+                                        {
+                                            "label": "User",
+                                            "value": "user"
+                                        },
+                                        {
+                                            "label": "Assistant",
+                                            "value": "assistant"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                {
+                                    "name": "content",
+                                    "type": "text",
+                                    "label": "Message Content"
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Message"
+                        },
+                        "type": "array",
+                        "label": "Messages",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 26,
+            "module": "twitter:createATweet",
+            "version": 6,
+            "parameters": {
+                "__IMTCONN__": 1689356
+            },
+            "mapper": {
+                "text": "{{19.result}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1498,
+                    "y": 144
+                },
+                "restore": {
+                    "expect": {
+                        "media_ids": {
+                            "mode": "edit"
+                        },
+                        "for_super_followers_only": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "twitter2"
+                            },
+                            "label": "My X (formerly Twitter) OAuth 2.0 connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:twitter2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "text",
+                        "type": "text",
+                        "label": "Text Content",
+                        "required": true
+                    },
+                    {
+                        "mode": "edit",
+                        "name": "media_ids",
+                        "spec": {
+                            "name": "value",
+                            "type": "text"
+                        },
+                        "type": "array",
+                        "label": "Media IDs"
+                    },
+                    {
+                        "name": "place_id",
+                        "type": "text",
+                        "label": "Place ID"
+                    },
+                    {
+                        "name": "direct_message_deep_link",
+                        "type": "url",
+                        "label": "Direct Message Link"
+                    },
+                    {
+                        "name": "for_super_followers_only",
+                        "type": "boolean",
+                        "label": "Allow to Post Exclusively for Super Followers Only"
+                    },
+                    {
+                        "name": "quote_tweet_id",
+                        "type": "text",
+                        "label": "Quote Post ID"
+                    }
+                ]
+            },
+            "onerror": [
+                {
+                    "id": 27,
+                    "module": "slack:CreateMessage",
+                    "version": 4,
+                    "parameters": {
+                        "__IMTCONN__": 1676835
+                    },
+                    "mapper": {
+                        "text": "{{26.error.type}}\n{{26.error.message}}",
+                        "parse": false,
+                        "mrkdwn": true,
+                        "channel": "C074EPVBG4U",
+                        "channelType": "public",
+                        "channelWType": "list"
+                    },
+                    "metadata": {
+                        "designer": {
+                            "x": 1755,
+                            "y": 324
+                        },
+                        "restore": {
+                            "expect": {
+                                "parse": {
+                                    "mode": "chose"
+                                },
+                                "mrkdwn": {
+                                    "mode": "chose"
+                                },
+                                "channel": {
+                                    "mode": "chose",
+                                    "label": "bot-handle-error"
+                                },
+                                "link_names": {
+                                    "mode": "chose"
+                                },
+                                "channelType": {
+                                    "label": "Public channel"
+                                },
+                                "channelWType": {
+                                    "label": "Select from the list"
+                                },
+                                "unfurl_links": {
+                                    "mode": "chose"
+                                },
+                                "unfurl_media": {
+                                    "mode": "chose"
+                                },
+                                "reply_broadcast": {
+                                    "mode": "chose"
+                                }
+                            },
+                            "parameters": {
+                                "__IMTCONN__": {
+                                    "data": {
+                                        "scoped": "true",
+                                        "connection": "slack3"
+                                    },
+                                    "label": "My Slack (bot) connection (integromat)"
+                                }
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "__IMTCONN__",
+                                "type": "account:slack2,slack3",
+                                "label": "Connection",
+                                "required": true
+                            }
+                        ],
+                        "expect": [
+                            {
+                                "name": "channelWType",
+                                "type": "select",
+                                "label": "Enter a channel ID or name",
+                                "required": true,
+                                "validate": {
+                                    "enum": [
+                                        "manualy",
+                                        "list"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "text",
+                                "type": "text",
+                                "label": "Text"
+                            },
+                            {
+                                "name": "blocks",
+                                "type": "text",
+                                "label": "Blocks"
+                            },
+                            {
+                                "name": "thread_ts",
+                                "type": "text",
+                                "label": "Thread message ID (time stamp)"
+                            },
+                            {
+                                "name": "reply_broadcast",
+                                "type": "boolean",
+                                "label": "Reply broadcast"
+                            },
+                            {
+                                "name": "link_names",
+                                "type": "boolean",
+                                "label": "Link names"
+                            },
+                            {
+                                "name": "parse",
+                                "type": "boolean",
+                                "label": "Parse message text"
+                            },
+                            {
+                                "name": "mrkdwn",
+                                "type": "boolean",
+                                "label": "Use markdown"
+                            },
+                            {
+                                "name": "unfurl_links",
+                                "type": "boolean",
+                                "label": "Unfurl primarily text-based content"
+                            },
+                            {
+                                "name": "unfurl_media",
+                                "type": "boolean",
+                                "label": "Unfurl media content"
+                            },
+                            {
+                                "name": "icon_emoji",
+                                "type": "text",
+                                "label": "Icon emoji"
+                            },
+                            {
+                                "name": "icon_url",
+                                "type": "url",
+                                "label": "Icon url"
+                            },
+                            {
+                                "name": "username",
+                                "type": "text",
+                                "label": "User name"
+                            },
+                            {
+                                "name": "channelType",
+                                "type": "select",
+                                "label": "Channel type",
+                                "required": true,
+                                "validate": {
+                                    "enum": [
+                                        "public",
+                                        "private",
+                                        "im",
+                                        "mpim"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "channel",
+                                "type": "select",
+                                "label": "Public channel",
+                                "required": true
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "id": 20,
+            "module": "google-sheets:addRow",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 1662378
+            },
+            "mapper": {
+                "from": "drive",
+                "mode": "select",
+                "values": {
+                    "0": "{{19.result}}"
+                },
+                "sheetId": "Sheet1",
+                "spreadsheetId": "/1B8Ae0TnpzO5QpXJZgfNuud_s8JgyUJXhxJL-D39NRbY",
+                "includesHeaders": true,
+                "insertDataOption": "INSERT_ROWS",
+                "valueInputOption": "USER_ENTERED",
+                "insertUnformatted": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1800,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "from": {
+                            "label": "My Drive"
+                        },
+                        "mode": {
+                            "label": "Select by path"
+                        },
+                        "sheetId": {
+                            "label": "Sheet1"
+                        },
+                        "spreadsheetId": {
+                            "path": [
+                                "post on social"
+                            ]
+                        },
+                        "includesHeaders": {
+                            "label": "Yes",
+                            "nested": [
+                                {
+                                    "name": "values",
+                                    "spec": [
+                                        {
+                                            "name": "0",
+                                            "type": "text",
+                                            "label": "posts (A)"
+                                        },
+                                        {
+                                            "name": "1",
+                                            "type": "text",
+                                            "label": "(B)"
+                                        },
+                                        {
+                                            "name": "2",
+                                            "type": "text",
+                                            "label": "(C)"
+                                        },
+                                        {
+                                            "name": "3",
+                                            "type": "text",
+                                            "label": "(D)"
+                                        },
+                                        {
+                                            "name": "4",
+                                            "type": "text",
+                                            "label": "(E)"
+                                        },
+                                        {
+                                            "name": "5",
+                                            "type": "text",
+                                            "label": "(F)"
+                                        },
+                                        {
+                                            "name": "6",
+                                            "type": "text",
+                                            "label": "(G)"
+                                        },
+                                        {
+                                            "name": "7",
+                                            "type": "text",
+                                            "label": "(H)"
+                                        },
+                                        {
+                                            "name": "8",
+                                            "type": "text",
+                                            "label": "(I)"
+                                        },
+                                        {
+                                            "name": "9",
+                                            "type": "text",
+                                            "label": "(J)"
+                                        },
+                                        {
+                                            "name": "10",
+                                            "type": "text",
+                                            "label": "(K)"
+                                        },
+                                        {
+                                            "name": "11",
+                                            "type": "text",
+                                            "label": "(L)"
+                                        },
+                                        {
+                                            "name": "12",
+                                            "type": "text",
+                                            "label": "(M)"
+                                        },
+                                        {
+                                            "name": "13",
+                                            "type": "text",
+                                            "label": "(N)"
+                                        },
+                                        {
+                                            "name": "14",
+                                            "type": "text",
+                                            "label": "(O)"
+                                        },
+                                        {
+                                            "name": "15",
+                                            "type": "text",
+                                            "label": "(P)"
+                                        },
+                                        {
+                                            "name": "16",
+                                            "type": "text",
+                                            "label": "(Q)"
+                                        },
+                                        {
+                                            "name": "17",
+                                            "type": "text",
+                                            "label": "(R)"
+                                        },
+                                        {
+                                            "name": "18",
+                                            "type": "text",
+                                            "label": "(S)"
+                                        },
+                                        {
+                                            "name": "19",
+                                            "type": "text",
+                                            "label": "(T)"
+                                        },
+                                        {
+                                            "name": "20",
+                                            "type": "text",
+                                            "label": "(U)"
+                                        },
+                                        {
+                                            "name": "21",
+                                            "type": "text",
+                                            "label": "(V)"
+                                        },
+                                        {
+                                            "name": "22",
+                                            "type": "text",
+                                            "label": "(W)"
+                                        },
+                                        {
+                                            "name": "23",
+                                            "type": "text",
+                                            "label": "(X)"
+                                        },
+                                        {
+                                            "name": "24",
+                                            "type": "text",
+                                            "label": "(Y)"
+                                        },
+                                        {
+                                            "name": "25",
+                                            "type": "text",
+                                            "label": "(Z)"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Values"
+                                }
+                            ]
+                        },
+                        "insertDataOption": {
+                            "mode": "chose",
+                            "label": "Insert rows"
+                        },
+                        "valueInputOption": {
+                            "mode": "chose",
+                            "label": "User entered"
+                        },
+                        "insertUnformatted": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google"
+                            },
+                            "label": "My Google connection (vincent@prellus.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "mode",
+                        "type": "select",
+                        "label": "Choose a Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "select",
+                                "fromAll",
+                                "map"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "insertUnformatted",
+                        "type": "boolean",
+                        "label": "Unformatted",
+                        "required": true
+                    },
+                    {
+                        "name": "valueInputOption",
+                        "type": "select",
+                        "label": "Value input option",
+                        "validate": {
+                            "enum": [
+                                "USER_ENTERED",
+                                "RAW"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "insertDataOption",
+                        "type": "select",
+                        "label": "Insert data option",
+                        "validate": {
+                            "enum": [
+                                "INSERT_ROWS",
+                                "OVERWRITE"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "type": "select",
+                        "label": "Choose a Drive",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "spreadsheetId",
+                        "type": "file",
+                        "label": "Spreadsheet ID",
+                        "required": true
+                    },
+                    {
+                        "name": "sheetId",
+                        "type": "select",
+                        "label": "Sheet Name",
+                        "required": true
+                    },
+                    {
+                        "name": "includesHeaders",
+                        "type": "select",
+                        "label": "Table contains headers",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                true,
+                                false
+                            ]
+                        }
+                    },
+                    {
+                        "name": "values",
+                        "spec": [
+                            {
+                                "name": "0",
+                                "type": "text",
+                                "label": "posts (A)"
+                            },
+                            {
+                                "name": "1",
+                                "type": "text",
+                                "label": "(B)"
+                            },
+                            {
+                                "name": "2",
+                                "type": "text",
+                                "label": "(C)"
+                            },
+                            {
+                                "name": "3",
+                                "type": "text",
+                                "label": "(D)"
+                            },
+                            {
+                                "name": "4",
+                                "type": "text",
+                                "label": "(E)"
+                            },
+                            {
+                                "name": "5",
+                                "type": "text",
+                                "label": "(F)"
+                            },
+                            {
+                                "name": "6",
+                                "type": "text",
+                                "label": "(G)"
+                            },
+                            {
+                                "name": "7",
+                                "type": "text",
+                                "label": "(H)"
+                            },
+                            {
+                                "name": "8",
+                                "type": "text",
+                                "label": "(I)"
+                            },
+                            {
+                                "name": "9",
+                                "type": "text",
+                                "label": "(J)"
+                            },
+                            {
+                                "name": "10",
+                                "type": "text",
+                                "label": "(K)"
+                            },
+                            {
+                                "name": "11",
+                                "type": "text",
+                                "label": "(L)"
+                            },
+                            {
+                                "name": "12",
+                                "type": "text",
+                                "label": "(M)"
+                            },
+                            {
+                                "name": "13",
+                                "type": "text",
+                                "label": "(N)"
+                            },
+                            {
+                                "name": "14",
+                                "type": "text",
+                                "label": "(O)"
+                            },
+                            {
+                                "name": "15",
+                                "type": "text",
+                                "label": "(P)"
+                            },
+                            {
+                                "name": "16",
+                                "type": "text",
+                                "label": "(Q)"
+                            },
+                            {
+                                "name": "17",
+                                "type": "text",
+                                "label": "(R)"
+                            },
+                            {
+                                "name": "18",
+                                "type": "text",
+                                "label": "(S)"
+                            },
+                            {
+                                "name": "19",
+                                "type": "text",
+                                "label": "(T)"
+                            },
+                            {
+                                "name": "20",
+                                "type": "text",
+                                "label": "(U)"
+                            },
+                            {
+                                "name": "21",
+                                "type": "text",
+                                "label": "(V)"
+                            },
+                            {
+                                "name": "22",
+                                "type": "text",
+                                "label": "(W)"
+                            },
+                            {
+                                "name": "23",
+                                "type": "text",
+                                "label": "(X)"
+                            },
+                            {
+                                "name": "24",
+                                "type": "text",
+                                "label": "(Y)"
+                            },
+                            {
+                                "name": "25",
+                                "type": "text",
+                                "label": "(Z)"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Values"
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com"
+    }
+}
